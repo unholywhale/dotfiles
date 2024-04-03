@@ -87,6 +87,36 @@ If FRAME is omitted or nil, use currently selected frame."
   :config
   (dashboard-setup-startup-hook))
 
+;; (use-package flycheck
+;;   :init
+;;   (flycheck-mode))
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are helm user
+;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+(use-package tree-sitter)
+(use-package tree-sitter-langs)
+(global-tree-sitter-mode)
+
 ;; which-key
 (use-package which-key
   :init
@@ -106,6 +136,13 @@ If FRAME is omitted or nil, use currently selected frame."
 	  which-key-max-description-length 25
 	  which-key-allow-imprecise-window-fit nil
 	  which-key-separator " → " ))
+
+
+;; Org Table of Contents
+(use-package toc-org
+  :commands toc-org-enable
+  :init (add-hook 'org-mode-hook 'toc-org-enable))
+
 
 ;; Move buffers
 (use-package buffer-move
@@ -128,12 +165,12 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; Dired
 (add-hook 'dired-load-hook
 	  (function (lambda () (load "dired-x"))))
-;; (define-key dired-mode-map (kbd "C-f") 'dired-find-file)
-;; (define-key dired-mode-map (kbd "C-b") 'dired-up-directory)
+(define-key dired-mode-map (kbd "C-f") 'dired-find-file)
+(define-key dired-mode-map (kbd "C-b") 'dired-up-directory)
 (use-package nerd-icons-dired
   :hook
   (dired-mode . nerd-icons-dired-mode))
-
+(setq dired-listing-switches "-agh --group-directories-first")
 
 ;; Terminal
 (use-package vterm
