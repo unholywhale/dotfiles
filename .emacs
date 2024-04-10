@@ -7,13 +7,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default)))
+   '("755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
+ '(menu-bar-mode nil)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrains Mono" :foundry "nil" :slant normal :weight regular :height 130 :width normal))))
+ '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 120 :width normal))))
  '(yascroll:thumb-fringe ((t (:background "dark gray" :foreground "dark gray"))))
  '(yascroll:thumb-text-area ((t (:background "dark gray")))))
 
@@ -44,6 +46,7 @@
 (setq inhibit-startup-message t) 
 (setq initial-scratch-message nil)
 (setq ring-bell-function 'ignore)
+(delete-selection-mode 1)
 
 ;; Transparency
 (add-to-list 'default-frame-alist '(alpha-background . 95))
@@ -397,6 +400,8 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; Syntax highlighting
 (use-package python-mode)
 (use-package dockerfile-mode)
+(use-package yuck-mode
+  :mode "\\.yuck\\'")
 (use-package markdown-mode)
 (use-package rainbow-mode
   :diminish

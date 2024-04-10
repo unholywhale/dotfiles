@@ -4,6 +4,6 @@
 swww init &
 swww img ~/Wallpapers/gruvbox-mountain-village.png &
 
-np-applet --indicator &
+nm-applet --indicator &
 
-waybar &
+eww open bar

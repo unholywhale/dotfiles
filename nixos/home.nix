@@ -13,10 +13,15 @@
     homeDirectory = "/home/alex";
   };
 
+
   home.packages = with pkgs; [
     manix
     telegram-desktop
     gnomeExtensions.dash-to-dock
+    vivaldi
+    floorp
+    google-chrome
+    chromium
     lxappearance
     vim
     nicotine-plus
@@ -24,13 +29,18 @@
     zsh
     zsh-completions
     zsh-syntax-highlighting
+    zsh-powerlevel10k
+    qt5ct
+    qt6ct
     rofi-wayland
     rofi-power-menu
     waybar
+    eww
     dunst
     libnotify
     swww
     grimblast
+    xdg-desktop-portal-hyprland
     kitty
     networkmanagerapplet
     killall
@@ -47,14 +57,28 @@
     jetbrains-mono
     mplus-outline-fonts.githubRelease
     dina-font
-    nerdfonts
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    steam
   ];
+
 
   programs.zsh = {
     enable = true;
+    initExtra = ''
+    [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+    source ~/dotfiles/.zshrc
+'';
+    plugins = [
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
+      
     oh-my-zsh = {
-      enable = true;
       theme = "robbyrussell";
+      enable = true;
       plugins = [
         "sudo"
         "terraform"
@@ -71,7 +95,8 @@
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-kde
+    xdg-desktop-portal-hyprland
+    xdg-desktop-portal-gtk
   ];
   xdg.portal.config.common.default = "*";
   
@@ -82,15 +107,15 @@
 
   gtk = {
     enable = true;
-    # theme = {
-    #   name = "Catppuccin-Macchiato-Compact-Pink-Dark";
-    #   package = pkgs.catppuccin-gtk.override {
-    #     accents = [ "lavender" ];
-    #     size = "compact";
-    #     tweaks = [ "rimless" ];
-    #     variant = "mocha";
-    #   };
+    # cursorTheme = {
+    #   name = "Adwaita";
+    #   package = pkgs.adwaita;
     # };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gtk";
   };
 
   fonts.fontconfig.enable = true;
@@ -112,7 +137,7 @@
   
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-gtk;
+    package = pkgs.emacs29-pgtk;
     extraPackages = epkgs: with epkgs; [
       vterm
       copilot

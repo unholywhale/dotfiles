@@ -111,6 +111,25 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (final: prev: {
+      eww = prev.eww.overrideAttrs (oldAttrs: rec {
+        src = prev.fetchFromGitHub {
+          owner = "elkowar";
+          repo = "eww";
+          rev = "master";
+          sha256 = "sha256-WcAWIvIdGE0tcS7WJ6JlbRlUnKvpvut500NozUmJ6jY=";
+        };
+        cargoDeps = oldAttrs.cargoDeps.overrideAttrs (prev.lib.const {
+          name = "eww-0.5.0-vendor.tar.gz";
+          inherit src;
+          outputHash = "sha256-XRFGX4uAGDLgawnwTHktfsUT0/aBiCSAnYyQQCyzEvU=";
+        });
+        buildInputs = oldAttrs.buildInputs ++ [ prev.libdbusmenu-gtk3 ];
+      });
+    })
+  ];
+
 
   system.stateVersion = "23.11";   
 
