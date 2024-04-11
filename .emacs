@@ -15,9 +15,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 120 :width normal))))
+ '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 120 :width normal)))
  '(yascroll:thumb-fringe ((t (:background "dark gray" :foreground "dark gray"))))
- '(yascroll:thumb-text-area ((t (:background "dark gray")))))
+ '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
 
 ;; Straight.el
 (defvar bootstrap-version)
@@ -90,35 +90,55 @@ If FRAME is omitted or nil, use currently selected frame."
   :config
   (dashboard-setup-startup-hook))
 
-;; (use-package flycheck
-;;   :init
-;;   (flycheck-mode))
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 (use-package lsp-mode
+  :commands lsp
+  :hook ((c++-mode python-mode) . lsp-deferred)
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (python-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+  (setq lsp-keymap-prefix "C-c l"))
 
-;; optionally
-(use-package lsp-ui :commands lsp-ui-mode)
-;; if you are helm user
-;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-;; if you are ivy user
-;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(setq treesit-language-source-alist
+  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+    (c "https://github.com/tree-sitter/tree-sitter-c")
+    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+    (cmake "https://github.com/uyha/tree-sitter-cmake")
+    (css "https://github.com/tree-sitter/tree-sitter-css")
+    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+    (go "https://github.com/tree-sitter/tree-sitter-go")
+    (html "https://github.com/tree-sitter/tree-sitter-html")
+    (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+    (json "https://github.com/tree-sitter/tree-sitter-json")
+    (make "https://github.com/alemuller/tree-sitter-make")
+    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+    (python "https://github.com/tree-sitter/tree-sitter-python")
+    (toml "https://github.com/tree-sitter/tree-sitter-toml")
+    (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+    (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-;; optionally if you want to use debugger
-(use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+(use-package tree-sitter
+  :hook
+  ((css-mode 
+    c-or-c++-mode
+    c-mode
+    c++-mode 
+    js-mode
+    json-mode
+    python-mode
+    sh-mode
+    typescript-mode
+    yaml-mode)
+   . tree-sitter-enable)
+  (tree-sitter-after-on . lsp-deferred)
+  :preface
+  (defun tree-sitter-enable ()
+    (tree-sitter-mode t))
+  :defer t)
 
-(use-package tree-sitter)
-(use-package tree-sitter-langs)
-(global-tree-sitter-mode)
+(use-package tree-sitter-langs
+  :hook
+  (tree-sitter-after-on . tree-sitter-hl-mode))
 
 ;; which-key
 (use-package which-key
@@ -168,8 +188,8 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; Dired
 (add-hook 'dired-load-hook
 	  (function (lambda () (load "dired-x"))))
-(define-key dired-mode-map (kbd "C-f") 'dired-find-file)
-(define-key dired-mode-map (kbd "C-b") 'dired-up-directory)
+;; (define-key dired-mode-map (kbd "C-f") 'dired-find-file)
+;; (define-key dired-mode-map (kbd "C-b") 'dired-up-directory)
 (use-package nerd-icons-dired
   :hook
   (dired-mode . nerd-icons-dired-mode))
@@ -355,13 +375,7 @@ If FRAME is omitted or nil, use currently selected frame."
   (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; Pair parentheses, brackets etc.
-
 (electric-pair-mode)
-
-;; Navigation
-;; (use-package swiper
-;;   :bind (("C-s" . swiper)
-;;          ("C-r" . swiper)))
 
 (use-package ace-jump-mode
   :bind
@@ -375,8 +389,10 @@ If FRAME is omitted or nil, use currently selected frame."
   (global-company-mode)
   :custom
   (company-begin-commands '(self-insert-command))
-  (company-idle-delay .1)
-  (company-minimum-prefix-length 2))
+  (company-idle-delay 0)
+  (company-echo-delay 0)
+  (company-tooltip-limit 20)
+  (company-minimum-prefix-length 3))
 
 (use-package company-box
   :after company

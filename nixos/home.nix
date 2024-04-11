@@ -15,50 +15,51 @@
 
 
   home.packages = with pkgs; [
-    manix
-    telegram-desktop
-    gnomeExtensions.dash-to-dock
-    vivaldi
-    floorp
-    google-chrome
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     chromium
-    lxappearance
-    vim
-    nicotine-plus
-    oh-my-zsh
-    zsh
-    zsh-completions
-    zsh-syntax-highlighting
-    zsh-powerlevel10k
-    qt5ct
-    qt6ct
-    rofi-wayland
-    rofi-power-menu
-    waybar
-    eww
+    clang-tools
+    nodePackages.pyright
+    dina-font
     dunst
-    libnotify
-    swww
-    grimblast
-    xdg-desktop-portal-hyprland
-    kitty
-    networkmanagerapplet
-    killall
+    eww
     file
+    fira-code
+    fira-code-symbols
+    floorp
     gcc
-    python3
-    # Fonts
+    gnomeExtensions.dash-to-dock
+    google-chrome
+    grimblast
+    jetbrains-mono
+    killall
+    kitty
+    liberation_ttf
+    libnotify
+    lxappearance
+    manix
+    mplus-outline-fonts.githubRelease
+    networkmanagerapplet
+    nicotine-plus
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    jetbrains-mono
-    mplus-outline-fonts.githubRelease
-    dina-font
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    oh-my-zsh
+    python3
+    qt5ct
+    qt6ct
+    rofi-power-menu
+    rofi-wayland
     steam
+    swww
+    telegram-desktop
+    vim
+    vivaldi
+    waybar
+    xdg-desktop-portal-hyprland
+    zsh
+    zsh-completions
+    zsh-powerlevel10k
+    zsh-syntax-highlighting
   ];
 
 
