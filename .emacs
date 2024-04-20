@@ -1,6 +1,18 @@
 (load-file "~/dotfiles/functions.el")
 (setq user-init-file load-file-name)
 
+(if (eq system-type 'darwin)
+    (progn
+      (setq gcc-lib-path "/opt/homebrew/lib/gcc/current/:/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13/")
+      (setenv "LIBRARY_PATH"
+	      (if (getenv "LIBRARY_PATH")
+		  (format "%s:%s" gcc-lib-path (getenv "LIBRARY_PATH"))
+		gcc-lib-path))
+      (setenv "LD_LIBRARY_PATH"
+	      (if (getenv "LD_LIBRARY_PATH")
+		  (format "%s:%s" gcc-lib-path (getenv "LD_LIBRARY_PATH"))
+		gcc-lib-path))))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -15,7 +27,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 120 :width normal)))
+ '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 140 :width normal)))
  '(yascroll:thumb-fringe ((t (:background "dark gray" :foreground "dark gray"))))
  '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
 
@@ -89,6 +101,9 @@ If FRAME is omitted or nil, use currently selected frame."
   ;;                             (bookmarks . "book")))
   :config
   (dashboard-setup-startup-hook))
+
+(use-package multiple-cursors)
+
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
@@ -185,14 +200,20 @@ If FRAME is omitted or nil, use currently selected frame."
   :ensure t)
 (load-theme 'wombat)
 
+(use-package nerd-icons
+  :custom
+  (nerd-icons-font-family "JetBrainsMono Nerd Font"))
+
 ;; Dired
 (add-hook 'dired-load-hook
 	  (function (lambda () (load "dired-x"))))
 ;; (define-key dired-mode-map (kbd "C-f") 'dired-find-file)
 ;; (define-key dired-mode-map (kbd "C-b") 'dired-up-directory)
-(use-package nerd-icons-dired
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
+;; (use-package nerd-icons-dired
+;;   :hook
+;;   (dired-mode . nerd-icons-dired-mode))
+(if (eq system-type 'darwin)
+    (setq insert-directory-program "gls" dired-use-ls-dired t))
 (setq dired-listing-switches "-agh --group-directories-first")
 
 ;; Terminal
@@ -389,15 +410,18 @@ If FRAME is omitted or nil, use currently selected frame."
   (global-company-mode)
   :custom
   (company-begin-commands '(self-insert-command))
-  (company-idle-delay 0)
-  (company-echo-delay 0)
+  (company-idle-delay 0.05)
+  (company-echo-delay 0.05)
+  (company-dabbrev-downcase 0)
   (company-tooltip-limit 20)
   (company-minimum-prefix-length 3))
+
 
 (use-package company-box
   :after company
   :diminish
   :hook (company-mode . company-box-mode))
+
 
 ;; Org
 (add-hook 'org-mode-hook 'org-indent-mode)
