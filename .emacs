@@ -102,8 +102,15 @@ If FRAME is omitted or nil, use currently selected frame."
   :config
   (dashboard-setup-startup-hook))
 
-(use-package multiple-cursors)
-
+(use-package multiple-cursors
+  :bind (("C-<" . 'mc/mark-previous-like-this)
+	 ("C->" . 'mc/mark-next-like-this)
+	 ("C-S-<mouse-1>" . 'mc/add-cursor-on-click)
+	 (:prefix "C-c m" :prefix-map mc-map
+		 ("d" . 'mc/mark-all-like-this-dwim)
+		 ("a" . 'mc/mark-all-like-this)
+		 ("n" . 'mc/insert-numbers)
+		 ("l" . 'mc/insert-letters))))
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
@@ -301,7 +308,7 @@ If FRAME is omitted or nil, use currently selected frame."
 	 ("C-s"   . consult-line)
          ("C-c h" . consult-history)
          ("C-c k" . consult-kmacro)
-         ("C-c m" . consult-man)
+         ;;("C-c m" . consult-man)
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
 	 ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
