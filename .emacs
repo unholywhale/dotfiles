@@ -380,7 +380,7 @@ If FRAME is omitted or nil, use currently selected frame."
 	      ("M-A" . marginalia-cycle))
   :after vertico
   :ensure t
-  :config
+  :init
   (marginalia-mode))
 
 (use-package embark
