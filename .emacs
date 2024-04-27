@@ -19,7 +19,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
+   '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
  '(menu-bar-mode nil)
  '(tool-bar-mode nil))
 (custom-set-faces
@@ -27,9 +27,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 140 :width normal)))
- '(yascroll:thumb-fringe ((t (:background "dark gray" :foreground "dark gray"))))
- '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
+ '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 140 :width normal))) nil '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
 
 ;; Straight.el
 (defvar bootstrap-version)
@@ -205,7 +203,9 @@ If FRAME is omitted or nil, use currently selected frame."
   :ensure t)
 (use-package timu-macos-theme
   :ensure t)
-(load-theme 'wombat)
+(use-package material-theme
+  :ensure t)
+(load-theme 'tango-dark)
 
 (use-package nerd-icons
   :custom
@@ -417,12 +417,11 @@ If FRAME is omitted or nil, use currently selected frame."
   (global-company-mode)
   :custom
   (company-begin-commands '(self-insert-command))
-  (company-idle-delay 0.05)
-  (company-echo-delay 0.05)
+  (company-idle-delay 0.1)
+  (company-echo-delay 0.1)
   (company-dabbrev-downcase 0)
   (company-tooltip-limit 20)
   (company-minimum-prefix-length 3))
-
 
 (use-package company-box
   :after company
@@ -454,6 +453,9 @@ If FRAME is omitted or nil, use currently selected frame."
   :diminish
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
+(use-package rainbow-delimiters
+  :diminish
+  :hook ((org-mode prog-mode) . rainbow-delimiters-mode))
 (use-package nix-mode
   :mode "\\.nix\\'")
 
