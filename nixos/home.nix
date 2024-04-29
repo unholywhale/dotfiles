@@ -13,12 +13,10 @@
     homeDirectory = "/home/alex";
   };
 
-
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     chromium
     clang-tools
-    nodePackages.pyright
     dina-font
     dunst
     eww
@@ -27,6 +25,7 @@
     fira-code-symbols
     floorp
     gcc
+    gnome.adwaita-icon-theme
     gnomeExtensions.dash-to-dock
     google-chrome
     grimblast
@@ -35,11 +34,13 @@
     kitty
     liberation_ttf
     libnotify
+    lutris
     lxappearance
     manix
     mplus-outline-fonts.githubRelease
     networkmanagerapplet
     nicotine-plus
+    nodePackages.pyright
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
@@ -62,7 +63,15 @@
     zsh-syntax-highlighting
   ];
 
-
+  home.pointerCursor = {
+    package = pkgs.gnome.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+    x11.defaultCursor = "left_ptr";
+  };
+  
   programs.zsh = {
     enable = true;
     initExtra = ''
@@ -106,6 +115,8 @@
     NIXOS_OZONE_WL = "1";
   };
 
+
+  
   gtk = {
     enable = true;
     # cursorTheme = {
@@ -116,7 +127,7 @@
 
   qt = {
     enable = true;
-    platformTheme = "gtk";
+    # platformTheme = "gtk";
   };
 
   fonts.fontconfig.enable = true;

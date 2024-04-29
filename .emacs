@@ -115,11 +115,16 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package lsp-mode
   :commands lsp
-  :hook ((c++-mode python-mode) . lsp-deferred)
+  ;;:hook ((c++-mode python-ts-mode) . lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l"))
 
 (use-package dap-mode)
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
 
 (setq treesit-language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
