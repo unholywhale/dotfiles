@@ -50,6 +50,7 @@
   (load-file user-init-file)
   (load-file user-init-file))
 
+(setq-default tab-width 2)
 (setq confirm-kill-processes nil)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -118,6 +119,8 @@ If FRAME is omitted or nil, use currently selected frame."
   :init
   (setq lsp-keymap-prefix "C-c l"))
 
+(use-package dap-mode)
+
 (setq treesit-language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (c "https://github.com/tree-sitter/tree-sitter-c")
@@ -142,7 +145,8 @@ If FRAME is omitted or nil, use currently selected frame."
   ((css-mode 
     c-or-c++-mode
     c-mode
-    c++-mode 
+    c++-mode
+    cmake-mode
     js-mode
     json-mode
     python-mode
@@ -205,7 +209,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :ensure t)
 (use-package material-theme
   :ensure t)
-(load-theme 'tango-dark)
+(load-theme 'material)
 
 (use-package nerd-icons
   :custom
@@ -444,6 +448,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (setq vc-follow-symlinks t)
 
 ;; Syntax highlighting
+(use-package cmake-mode)
 (use-package python-mode)
 (use-package dockerfile-mode)
 (use-package yuck-mode
