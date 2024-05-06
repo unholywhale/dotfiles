@@ -27,7 +27,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 140 :width normal))) nil '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
+ '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 130 :width normal))) nil '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
 
 ;; Straight.el
 (defvar bootstrap-version)
@@ -437,6 +437,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :diminish
   :hook (company-mode . company-box-mode))
 
+(use-package cape)
 
 ;; Org
 (add-hook 'org-mode-hook 'org-indent-mode)
@@ -453,7 +454,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (setq vc-follow-symlinks t)
 
 ;; Syntax highlighting
-(use-package cmake-mode)
+;; (use-package cmake-mode)
 (use-package python-mode)
 (use-package dockerfile-mode)
 (use-package yuck-mode
