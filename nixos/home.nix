@@ -16,14 +16,21 @@
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     chromium
+    whitesur-gtk-theme
+    pavucontrol
     clang-tools
+    ollama
+    distrobox
+    cudaPackages.cudatoolkit
     dina-font
+    ripgrep
     dunst
     eww
     file
     fira-code
     fira-code-symbols
     floorp
+    theme-vertex
     gcc
     gnome.adwaita-icon-theme
     gnomeExtensions.dash-to-dock
@@ -50,12 +57,12 @@
     qt6ct
     rofi-power-menu
     rofi-wayland
-    steam
     swww
     telegram-desktop
     vim
     vivaldi
     waybar
+    wine
     xdg-desktop-portal-hyprland
     zsh
     zsh-completions
@@ -146,16 +153,16 @@
   # };
 
   #programs.wezterm.enable = true;
-  
+
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs29-pgtk;
+    package = pkgs.emacs29-gtk3;
     extraPackages = epkgs: with epkgs; [
       vterm
       copilot
     ];
   };
-  services.emacs.enable = true;
+  #services.emacs.enable = true;
   home.file.".emacs".text = ''(load "~/dotfiles/.emacs")'';
 
   # home.file.".config/hypr/hyprland.conf".text = ''

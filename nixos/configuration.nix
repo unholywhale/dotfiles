@@ -34,9 +34,12 @@
 
   # Enable X Server and Desktop Environment
   services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.displayManager.sddm.wayland.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # services.xserver.displayManager.sddm.enable = true;
+  # services.xserver.displayManager.sddm.wayland.enable = true;
+  # services.desktopManager.plasma6.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.desktopManager.cinnamon.enable = true;
   programs.hyprland.enable = true;
 
   # Enable networking
@@ -53,6 +56,7 @@
 
   # Configure PipeWire
   hardware.pulseaudio.enable = false;
+  sound.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -69,6 +73,14 @@
       '')
     ];
   };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+  };
+
+
   
   # Set your time zone.
   time.timeZone = "Asia/Bangkok";
@@ -104,7 +116,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio"];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
