@@ -22,12 +22,6 @@
    '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
  '(menu-bar-mode nil)
  '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "JetBrainsMono Nerd Font" :foundry "JB" :slant normal :weight regular :height 130 :width normal))) nil '(yascroll:thumb-text-area ((t (:background "dark gray"))))))
 
 ;; Straight.el
 (defvar bootstrap-version)
@@ -62,10 +56,6 @@
 ;; Transparency
 (add-to-list 'default-frame-alist '(alpha-background . 95))
 
-(when window-system
-  (set-frame-position (selected-frame) 250 170)
-  (set-frame-size (selected-frame) 135 40))
-
 (defun frame-recenter (&optional frame)
   "Center FRAME on the screen.
 FRAME can be a frame name, a terminal name, or a frame.
@@ -74,9 +64,23 @@ If FRAME is omitted or nil, use currently selected frame."
   (unless (eq 'maximised (frame-parameter nil 'fullscreen))
     (modify-frame-parameters
      frame '((user-position . t) (top . 0.5) (left . 0.5)))))
-(frame-recenter)
 
-(modify-frame-parameters nil '((width . 135) (height . 40)))
+(defun set-appearance ()
+	(message "Setting appearance...")
+	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
+	(set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
+	(set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
+	(load-theme 'material)
+	(when window-system
+		(set-frame-size (selected-frame) 170 50)
+		;;(frame-recenter)
+		))
+(if (daemonp)
+		(add-hook 'after-make-frame-functions
+							(lambda (frame)
+								(with-selected-frame frame
+									(set-appearance))))
+	(set-appearance))
 
 (use-package diminish)
 
@@ -214,11 +218,23 @@ If FRAME is omitted or nil, use currently selected frame."
   :ensure t)
 (use-package material-theme
   :ensure t)
-(load-theme 'material)
 
 (use-package nerd-icons
   :custom
   (nerd-icons-font-family "JetBrainsMono Nerd Font"))
+
+(use-package ranger
+	:config
+	(setq ranger-key nil)
+	:bind (:map ranger-mode-map
+							(("C-b" . nil)
+							 ("C-n" . nil)
+							 ("C-p" . nil)
+							 ("C-f" . nil)
+							 ("C-b" . ranger-up-directory)
+							 ("C-n" . ranger-next-file)
+							 ("C-p" . ranger-prev-file)
+							 ("C-f" . ranger-find-file))))
 
 ;; Dired
 (add-hook 'dired-load-hook
