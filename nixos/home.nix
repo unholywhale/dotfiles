@@ -16,6 +16,9 @@
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     chromium
+    btop
+    ranger
+    speedtest-cli
     whitesur-gtk-theme
     pavucontrol
     clang-tools

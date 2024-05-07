@@ -38,7 +38,6 @@
   # services.xserver.displayManager.sddm.wayland.enable = true;
   # services.desktopManager.plasma6.enable = true;
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
   services.xserver.desktopManager.cinnamon.enable = true;
   programs.hyprland.enable = true;
 
