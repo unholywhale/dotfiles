@@ -223,18 +223,18 @@ If FRAME is omitted or nil, use currently selected frame."
   :custom
   (nerd-icons-font-family "JetBrainsMono Nerd Font"))
 
-(use-package ranger
-	:config
-	(setq ranger-key nil)
-	:bind (:map ranger-mode-map
-							(("C-b" . nil)
-							 ("C-n" . nil)
-							 ("C-p" . nil)
-							 ("C-f" . nil)
-							 ("C-b" . ranger-up-directory)
-							 ("C-n" . ranger-next-file)
-							 ("C-p" . ranger-prev-file)
-							 ("C-f" . ranger-find-file))))
+;; (use-package ranger
+;; 	:config
+;; 	(setq ranger-key nil)
+;; 	:bind (:map ranger-mode-map
+;; 							(("C-b" . nil)
+;; 							 ("C-n" . nil)
+;; 							 ("C-p" . nil)
+;; 							 ("C-f" . nil)
+;; 							 ("C-b" . ranger-up-directory)
+;; 							 ("C-n" . ranger-next-file)
+;; 							 ("C-p" . ranger-prev-file)
+;; 							 ("C-f" . ranger-find-file))))
 
 ;; Dired
 (add-hook 'dired-load-hook
@@ -512,3 +512,6 @@ If FRAME is omitted or nil, use currently selected frame."
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 (global-set-key (kbd "<C-return>")  'newline)
 
+;; (use-package telega
+;; 	:init
+;; 	(setq telega-use-images t))
