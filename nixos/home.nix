@@ -16,6 +16,13 @@
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     chromium
+    cmake
+    libwebp
+    ffmpeg
+    gnumake
+    openssl
+    tldr
+    tdlib
     btop
     ranger
     speedtest-cli
@@ -115,7 +122,7 @@
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-hyprland
+    # xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
   ];
   xdg.portal.config.common.default = "*";
