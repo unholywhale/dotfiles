@@ -70,7 +70,7 @@ If FRAME is omitted or nil, use currently selected frame."
 	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
 	(set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
 	(set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
-	(load-theme 'material)
+	(load-theme 'wombat)
 	(when window-system
 		(set-frame-size (selected-frame) 170 50)
 		;;(frame-recenter)
@@ -222,19 +222,6 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package nerd-icons
   :custom
   (nerd-icons-font-family "JetBrainsMono Nerd Font"))
-
-;; (use-package ranger
-;; 	:config
-;; 	(setq ranger-key nil)
-;; 	:bind (:map ranger-mode-map
-;; 							(("C-b" . nil)
-;; 							 ("C-n" . nil)
-;; 							 ("C-p" . nil)
-;; 							 ("C-f" . nil)
-;; 							 ("C-b" . ranger-up-directory)
-;; 							 ("C-n" . ranger-next-file)
-;; 							 ("C-p" . ranger-prev-file)
-;; 							 ("C-f" . ranger-find-file))))
 
 ;; Dired
 (add-hook 'dired-load-hook
@@ -438,11 +425,13 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package company
   :diminish
+	:bind (("C-c y" . company-yasnippet))
   :init
   (global-company-mode)
   :custom
   (company-begin-commands '(self-insert-command))
   (company-idle-delay 0.1)
+	(company-require-match nil)
   (company-echo-delay 0.1)
   (company-dabbrev-downcase 0)
   (company-tooltip-limit 20)
@@ -454,6 +443,11 @@ If FRAME is omitted or nil, use currently selected frame."
   :hook (company-mode . company-box-mode))
 
 (use-package cape)
+
+(use-package yasnippet
+	:config
+	(yas-global-mode 1))
+(use-package yasnippet-snippets)
 
 ;; Org
 (add-hook 'org-mode-hook 'org-indent-mode)
