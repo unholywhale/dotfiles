@@ -1,5 +1,7 @@
-(load-file "~/dotfiles/functions.el")
+(setq dotfiles-dir "~/dotfiles")
+(load-file (format "%s/%s" dotfiles-dir "functions.el"))
 (setq user-init-file load-file-name)
+
 
 (if (eq system-type 'darwin)
     (progn
@@ -19,7 +21,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
+	 '("c1638a7061fb86be5b4347c11ccf274354c5998d52e6d8386e997b862773d1d2" "703a3469ae4d2a83fd5648cac0058d57ca215d0fea7541fb852205e4fae94983" "0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "c7a926ad0e1ca4272c90fce2e1ffa7760494083356f6bb6d72481b879afce1f2" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
  '(menu-bar-mode nil)
  '(tool-bar-mode nil))
 
@@ -70,7 +72,7 @@ If FRAME is omitted or nil, use currently selected frame."
 	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
 	(set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
 	(set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
-	(load-theme 'wombat)
+	(load-theme 'modus-operandi-tinted)
 	(when window-system
 		(set-frame-size (selected-frame) 170 50)
 		;;(frame-recenter)
@@ -81,6 +83,17 @@ If FRAME is omitted or nil, use currently selected frame."
 								(with-selected-frame frame
 									(set-appearance))))
 	(set-appearance))
+
+;; Themes
+(use-package zenburn-theme
+  :ensure t)
+(use-package timu-macos-theme
+  :ensure t)
+(use-package material-theme
+  :ensure t)
+(use-package modus-themes
+	:ensure t)
+
 
 (use-package diminish)
 
@@ -116,6 +129,13 @@ If FRAME is omitted or nil, use currently selected frame."
 		 ("l" . 'mc/insert-letters))))
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
+
+(use-package direnv
+	:diminish
+	:ensure t
+  :config
+	(setq direnv-always-show-summary nil)
+  (direnv-mode))
 
 (use-package lsp-mode
   :commands lsp
@@ -211,13 +231,6 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package general)
 
-;; Themes
-(use-package zenburn-theme
-  :ensure t)
-(use-package timu-macos-theme
-  :ensure t)
-(use-package material-theme
-  :ensure t)
 
 (use-package nerd-icons
   :custom
@@ -414,8 +427,11 @@ If FRAME is omitted or nil, use currently selected frame."
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; Pair parentheses, brackets etc.
-(electric-pair-mode)
+;; ;; Pair parentheses, brackets etc.
+;; (electric-pair-mode)
+(use-package smartparens
+	:init
+	(smartparens-global-mode))
 
 (use-package ace-jump-mode
   :bind
@@ -446,6 +462,7 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package yasnippet
 	:config
+	(add-to-list 'yas-snippet-dirs (format "%s/%s/%s" dotfiles-dir "emacs.stuff" "yasnippets"))
 	(yas-global-mode 1))
 (use-package yasnippet-snippets)
 
@@ -482,12 +499,12 @@ If FRAME is omitted or nil, use currently selected frame."
 
 
 ;; Virtualenv
-(setenv "WORKON_HOME" "~/envs/")
+;; (setenv "WORKON_HOME" "~/envs/")
 ;;(pyvenv-workon "py3.12_arm")
 ;;(python-mode . ((pyvenv-activate . "~/envs/py3.12_arm")))
 
-(use-package pyvenv
-  :ensure t)
+;; (use-package pyvenv
+;;   :ensure t)
 
 ;; Copilot
 (use-package copilot
@@ -509,3 +526,9 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; (use-package telega
 ;; 	:init
 ;; 	(setq telega-use-images t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

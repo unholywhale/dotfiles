@@ -19,6 +19,7 @@
     cmake
     libwebp
     ffmpeg
+    discord
     gnumake
     openssl
     tldr
@@ -42,6 +43,7 @@
     floorp
     theme-vertex
     gcc
+    gdb
     gnome.adwaita-icon-theme
     gnomeExtensions.dash-to-dock
     google-chrome
@@ -88,12 +90,18 @@
     x11.enable = true;
     x11.defaultCursor = "left_ptr";
   };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
   
   programs.zsh = {
     enable = true;
     initExtra = ''
     [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
     source ~/dotfiles/.zshrc
+    eval "$(direnv hook zsh)"
 '';
     plugins = [
       {
