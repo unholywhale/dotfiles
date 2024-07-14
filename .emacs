@@ -2,7 +2,6 @@
 (load-file (format "%s/%s" dotfiles-dir "functions.el"))
 (setq user-init-file load-file-name)
 
-
 (if (eq system-type 'darwin)
     (progn
       (setq gcc-lib-path "/opt/homebrew/lib/gcc/current/:/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13/")
@@ -20,8 +19,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes nil)
  '(custom-safe-themes
-	 '("c1638a7061fb86be5b4347c11ccf274354c5998d52e6d8386e997b862773d1d2" "703a3469ae4d2a83fd5648cac0058d57ca215d0fea7541fb852205e4fae94983" "0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "c7a926ad0e1ca4272c90fce2e1ffa7760494083356f6bb6d72481b879afce1f2" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
+	 '("4c7228157ba3a48c288ad8ef83c490b94cb29ef01236205e360c2c4db200bb18" "9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0" "95167736741bef2ad3e0543ed545dada5b95fef309883253387a2b14ab67db8d" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "1ea82e39d89b526e2266786886d1f0d3a3fa36c87480fad59d8fab3b03ef576e" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "7613ef56a3aebbec29618a689e47876a72023bbd1b8393efc51c38f5ed3f33d1" "c1638a7061fb86be5b4347c11ccf274354c5998d52e6d8386e997b862773d1d2" "703a3469ae4d2a83fd5648cac0058d57ca215d0fea7541fb852205e4fae94983" "0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "c7a926ad0e1ca4272c90fce2e1ffa7760494083356f6bb6d72481b879afce1f2" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
  '(menu-bar-mode nil)
  '(tool-bar-mode nil))
 
@@ -46,6 +46,19 @@
   (load-file user-init-file)
   (load-file user-init-file))
 
+;; Themes
+(use-package zenburn-theme
+  :ensure t)
+(use-package nord-theme
+	:ensure t)
+;; (use-package timu-macos-theme
+;;   :ensure t)
+(use-package material-theme
+  :ensure t)
+(use-package modus-themes
+	:ensure t)
+
+
 (setq-default tab-width 2)
 (setq confirm-kill-processes nil)
 (tool-bar-mode -1)
@@ -56,7 +69,7 @@
 (delete-selection-mode 1)
 
 ;; Transparency
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+;;(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (defun frame-recenter (&optional frame)
   "Center FRAME on the screen.
@@ -65,16 +78,16 @@ If FRAME is omitted or nil, use currently selected frame."
   (interactive)
   (unless (eq 'maximised (frame-parameter nil 'fullscreen))
     (modify-frame-parameters
-     frame '((user-position . t) (top . 0.5) (left . 0.5)))))
+     frame '((user-position . t) (top . 0.4) (left . 0.4)))))
 
 (defun set-appearance ()
 	(message "Setting appearance...")
-	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
-	(set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
-	(set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
-	(load-theme 'modus-operandi-tinted)
+	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 110 :width 'normal)
+	;; (set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
+	;; (set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
+	(load-theme 'nord)
 	(when window-system
-		(set-frame-size (selected-frame) 170 50)
+		(set-frame-size (selected-frame) 160 40)
 		;;(frame-recenter)
 		))
 (if (daemonp)
@@ -84,18 +97,19 @@ If FRAME is omitted or nil, use currently selected frame."
 									(set-appearance))))
 	(set-appearance))
 
-;; Themes
-(use-package zenburn-theme
-  :ensure t)
-(use-package timu-macos-theme
-  :ensure t)
-(use-package material-theme
-  :ensure t)
-(use-package modus-themes
-	:ensure t)
-
-
 (use-package diminish)
+
+;; ;; Music
+;; (use-package emms
+;; 	:ensure t
+;; 	:config
+;; 	(require 'emms-setup)
+;; 	(require 'emms-player-mpd)
+;; 	(setq emms-seek-seconds 5)
+;; 	(setq emms-player-list '(emms-player-mpd))
+;; 	(setq emms-info-functions '(emms-info-mpd))
+;; 	(setq emms-player-mpd-server-name "localhost")
+;; 	(setq emms-player-mpd-server-port "6600"))
 
 ;; Dashboard
 (use-package dashboard
@@ -130,14 +144,15 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
-(use-package direnv
-	:diminish
-	:ensure t
-  :config
-	(setq direnv-always-show-summary nil)
-  (direnv-mode))
+;; (use-package direnv
+;; 	:diminish
+;; 	:ensure t
+;;   :config
+;; 	(setq direnv-always-show-summary nil)
+;;   (direnv-mode))
 
 (use-package lsp-mode
+	:diminish
   :commands lsp
   ;;:hook ((c++-mode python-ts-mode) . lsp-deferred)
   :init
@@ -169,6 +184,8 @@ If FRAME is omitted or nil, use currently selected frame."
     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
+(use-package yaml-mode)
+
 (use-package tree-sitter
   :hook
   ((css-mode 
@@ -179,7 +196,7 @@ If FRAME is omitted or nil, use currently selected frame."
     js-mode
     json-mode
     python-mode
-    sh-mode
+;;    sh-mode
     typescript-mode
     yaml-mode)
    . tree-sitter-enable)
@@ -307,11 +324,11 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;; Scroll bar
 (scroll-bar-mode 0)
-(use-package yascroll
-  :straight (:host github :repo "emacsorphanage/yascroll" :files ("yascroll.el"))
-  :ensure t
-  :init
-  (global-yascroll-bar-mode))
+;; (use-package yascroll
+;;   :straight (:host github :repo "emacsorphanage/yascroll" :files ("yascroll.el"))
+;;   :ensure t
+;;   :init
+;;   (global-yascroll-bar-mode))
 
 ;; Completion
 (use-package orderless)
@@ -453,10 +470,10 @@ If FRAME is omitted or nil, use currently selected frame."
   (company-tooltip-limit 20)
   (company-minimum-prefix-length 3))
 
-(use-package company-box
-  :after company
-  :diminish
-  :hook (company-mode . company-box-mode))
+;; (use-package company-box
+;;   :after company
+;;   :diminish
+;;   :hook (company-mode . company-box-mode))
 
 (use-package cape)
 
