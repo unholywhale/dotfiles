@@ -516,12 +516,12 @@ If FRAME is omitted or nil, use currently selected frame."
 
 
 ;; Virtualenv
-;; (setenv "WORKON_HOME" "~/envs/")
-;;(pyvenv-workon "py3.12_arm")
+(setenv "WORKON_HOME" "~/personal/envs/")
+(pyvenv-workon "py3.12")
 ;;(python-mode . ((pyvenv-activate . "~/envs/py3.12_arm")))
 
-;; (use-package pyvenv
-;;   :ensure t)
+(use-package pyvenv
+    :ensure t)
 
 ;; Copilot
 (use-package copilot

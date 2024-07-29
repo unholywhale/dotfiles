@@ -249,9 +249,9 @@ mpd_music_dir = ~/Music
 #
 #current_item_inactive_column_suffix = $/r$(end)
 #
-now_playing_prefix = $u$b
+now_playing_prefix = $(green)$b
 #
-now_playing_suffix = $/b$/u
+now_playing_suffix = $/b$(end)
 #
 #browser_playlist_prefix = "$2playlist$9 "
 #
@@ -335,7 +335,7 @@ now_playing_suffix = $/b$/u
 #
 #playlist_shorten_total_times = no
 #
-#playlist_separate_albums = no
+playlist_separate_albums = yes
 #
 ##
 ## Note: Possible display modes: classic, columns.
@@ -397,7 +397,7 @@ media_library_primary_tag = album_artist
 #statusbar_visibility = yes
 #
 ## Show the "Connected to ..." message on startup
-#connected_message_on_startup = yes
+connected_message_on_startup = no
 #
 #titles_visibility = yes
 #
@@ -471,7 +471,7 @@ media_library_primary_tag = album_artist
 #
 #display_volume_level = yes
 #
-#display_bitrate = no
+display_bitrate = no
 #
 #display_remaining_time = no
 #
