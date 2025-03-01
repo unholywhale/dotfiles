@@ -16,4 +16,4 @@ map f6 launch --location=vsplit
 map f4 launch --location=split
 map f7 layout_action rotate
 
-select_by_word_characters @~?&%+-#
+select_by_word_characters @~?&%+#
