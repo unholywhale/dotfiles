@@ -49,14 +49,14 @@
 ;; Themes
 (use-package zenburn-theme
   :ensure t)
-(use-package nord-theme
-	:ensure t)
+;; (use-package nord-theme
+;; 	:ensure t)
 ;; (use-package timu-macos-theme
 ;;   :ensure t)
-(use-package material-theme
-  :ensure t)
-(use-package modus-themes
-	:ensure t)
+;; (use-package material-theme
+;;   :ensure t)
+;; (use-package modus-themes
+;; 	:ensure t)
 
 
 (setq-default tab-width 2)
@@ -82,10 +82,10 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (defun set-appearance ()
 	(message "Setting appearance...")
-	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 110 :width 'normal)
+	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
 	;; (set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
 	;; (set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
-	(load-theme 'nord)
+	(load-theme 'modus-vivendi-tinted)
 	(when window-system
 		(set-frame-size (selected-frame) 160 40)
 		;;(frame-recenter)
@@ -517,7 +517,7 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;; Virtualenv
 (setenv "WORKON_HOME" "~/personal/envs/")
-(pyvenv-workon "py3.12")
+;(pyvenv-workon "py3.12")
 ;;(python-mode . ((pyvenv-activate . "~/envs/py3.12_arm")))
 
 (use-package pyvenv
