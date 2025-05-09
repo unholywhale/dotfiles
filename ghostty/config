@@ -1,1 +1,5 @@
 theme = IC_Green_PPL
+
+keybind = ctrl+o=goto_split:next
+keybind = ctrl+two=new_split:down
+keybind = ctrl+three=new_split:right
