@@ -1,5 +1,10 @@
 theme = IC_Green_PPL
 
-keybind = ctrl+o=goto_split:next
+shell-integration-features = no-cursor
+
+keybind = ctrl+tab=goto_split:next
 keybind = ctrl+two=new_split:down
 keybind = ctrl+three=new_split:right
+
+keybind = ctrl+shift+physical:c=copy_to_clipboard
+keybind = ctrl+shift+physical:v=paste_from_clipboard
