@@ -185,6 +185,7 @@ If FRAME is omitted or nil, use currently selected frame."
     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (use-package yaml-mode)
+(use-package qml-mode)
 
 (use-package tree-sitter
   :hook
@@ -338,7 +339,7 @@ If FRAME is omitted or nil, use currently selected frame."
   (vertico-mode)
   :config
   (add-to-list 'load-path "~/.emacs.d/straight/repos/vertico/extensions")
-  (setq completion-styles '(basic substring partial-completion orderless))
+  (setq completion-styles '(substring orderless basic partial-completion))
   (require 'vertico-directory)
   ;; Enable vertico-directory features here
   )
