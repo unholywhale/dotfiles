@@ -144,12 +144,12 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
-;; (use-package direnv
-;; 	:diminish
-;; 	:ensure t
-;;   :config
-;; 	(setq direnv-always-show-summary nil)
-;;   (direnv-mode))
+(use-package direnv
+	:diminish
+	:ensure t
+  :config
+	(setq direnv-always-show-summary nil)
+  (direnv-mode))
 
 (use-package lsp-mode
 	:diminish
@@ -268,7 +268,13 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;; Terminal
 (use-package vterm
-  :straight (:host github :repo "akermu/emacs-libvterm"))
+  :straight (:host github :repo "akermu/emacs-libvterm")
+	:config
+	(defun my-vterm-trigger-direnv-reload ()
+		"Force direnv to reload in a new vterm"
+		(when (locate-dominating-file default-directory ".envrc")
+			(vterm-send-string "direnv reload\n")))
+	(add-hook 'vterm-mode-hook #'my-vterm-trigger-direnv-reload ()))
 
 (use-package vterm-toggle
   :after vterm
