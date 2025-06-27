@@ -494,6 +494,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (add-hook 'org-mode-hook 'org-indent-mode)
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(setq org-startup-with-visual-line-mode t)
 
 (use-package toc-org
     :commands toc-org-enable
