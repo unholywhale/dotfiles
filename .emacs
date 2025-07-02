@@ -513,14 +513,49 @@ If FRAME is omitted or nil, use currently selected frame."
   (company-idle-delay 0.1)
 	(company-require-match nil)
   (company-echo-delay 0.1)
-  (company-dabbrev-downcase 0)
+  (company-dabbrev-downcase nil)
   (company-tooltip-limit 20)
-  (company-minimum-prefix-length 3))
+  (company-minimum-prefix-length 3)
+	:config
+	;; History tracking
+	(defvar my/company-history-table (make-hash-table :test 'equal)
+		"Hash table to store completion history with timestamps.")
 
-;; (use-package company-box
-;;   :after company
-;;   :diminish
-;;   :hook (company-mode . company-box-mode))
+	;; Record selected completions
+	(defun my/company-record-completion (candidate)
+		"Record the selected completion with current timestamp."
+		(when candidate
+			(puthash candidate (float-time) my/company-history-table)))
+
+	(add-hook 'company-completion-finished-hook
+						(lambda (candidate) (my/company-record-completion candidate)))
+	;; Custom transformation function with history and prefix priority
+  (defun my/company-sort-history-prefix-first (candidates)
+    (let* ((input company-prefix)
+           (history-matches '())
+           (prefix-matches '())
+           (other-matches '()))
+      (dolist (cand candidates)
+        (cond
+         ;; First priority: history matches that are also prefix matches
+         ((and (gethash cand my/company-history-table)
+               (string-prefix-p input cand))
+          (push cand history-matches))
+         ;; Second priority: prefix matches without history
+         ((string-prefix-p input cand)
+          (push cand prefix-matches))
+         ;; Everything else
+         (t
+          (push cand other-matches))))
+      ;; Sort history matches by recency (most recent first)
+      (setq history-matches
+            (sort history-matches
+                  (lambda (a b)
+                    (> (gethash a my/company-history-table 0)
+                       (gethash b my/company-history-table 0)))))
+      (nconc history-matches (nreverse prefix-matches) (nreverse other-matches))))
+  ;; Add the sorting function to company transformers
+  (add-to-list 'company-transformers #'my/company-sort-history-prefix-first))
 
 (use-package cape)
 
