@@ -44,7 +44,7 @@
 (defun reload-init-file ()
   (interactive)
   (load-file user-init-file)
-  (load-file user-init-file))
+	(set-appearance))
 
 ;; Themes
 (use-package zenburn-theme
