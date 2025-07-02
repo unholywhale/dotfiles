@@ -1,5 +1,6 @@
 (setq dotfiles-dir "~/dotfiles")
 (load-file (format "%s/%s" dotfiles-dir "functions.el"))
+(load-file (format "%s/%s" dotfiles-dir "visual-selection-mode.el"))
 (setq user-init-file load-file-name)
 
 (if (eq system-type 'darwin)
