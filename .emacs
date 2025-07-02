@@ -338,17 +338,57 @@ If FRAME is omitted or nil, use currently selected frame."
 ;;   (global-yascroll-bar-mode))
 
 ;; Completion
-(use-package orderless)
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless))
+  (setq orderless-matching-styles 
+        '(orderless-literal     ; Then literal substring matches
+          orderless-regexp)))   ; Then regexp matches
 
 (use-package vertico
   :init
   (vertico-mode)
-  :config
-  (add-to-list 'load-path "~/.emacs.d/straight/repos/vertico/extensions")
-  (setq completion-styles '(substring orderless basic partial-completion))
-  (require 'vertico-directory)
-  ;; Enable vertico-directory features here
-  )
+	:config
+  (defun my/vertico-sort-history-prefix-first (candidates)
+    (let* ((input (minibuffer-contents-no-properties))
+           ;; Extract just the part after the last / for file completion
+           (input-basename (if (and minibuffer-completing-file-name
+                                    (string-match "/\\([^/]*\\)$" input))
+                               (match-string 1 input)
+                             input))
+           ;; Get the relevant history list
+           (hist (and (not (eq minibuffer-history-variable t))
+                      (symbol-value minibuffer-history-variable)))
+           ;; Categories for sorting
+           (history-prefix-matches '())
+           (history-other-matches '())
+           (prefix-matches '())
+           (other-matches '()))
+      ;; Sort candidates into categories
+      (dolist (cand candidates)
+        (let* ((cand-str (substring-no-properties cand))
+               (display-cand cand-str)
+               (is-prefix (string-prefix-p input-basename display-cand 'ignore-case))
+               (in-history (member cand-str hist)))
+          (cond
+           ;; History + prefix match (highest priority)
+           ((and in-history is-prefix)
+            (push cand history-prefix-matches))
+           ;; History + other match
+           (in-history
+            (push cand history-other-matches))
+           ;; Prefix match only
+           (is-prefix
+            (push cand prefix-matches))
+           ;; Other matches
+           (t
+            (push cand other-matches)))))
+      ;; Combine all groups in priority order
+      (nconc (nreverse history-prefix-matches)
+             (nreverse history-other-matches)
+             (nreverse prefix-matches)
+             (nreverse other-matches))))
+  (setq vertico-sort-override-function #'my/vertico-sort-history-prefix-first))
 
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
