@@ -13,6 +13,12 @@
 ;; Newline
 (global-set-key (kbd "<C-return>")  'newline)
 
+;; Vim-like word movement and deletion
+(global-set-key (kbd "M-f") 'my/forward-word-or-whitespace)
+(global-set-key (kbd "M-b") 'my/backward-word-or-whitespace)
+(global-set-key (kbd "M-d") 'my/kill-word-or-whitespace)
+(global-set-key (kbd "M-<backspace>") 'my/backward-kill-word-or-whitespace)
+
 ;; Reload init file function
 (defun reload-init-file ()
   (interactive)
