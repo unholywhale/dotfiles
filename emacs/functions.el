@@ -1,3 +1,5 @@
+;;; functions.el --- Custom utility functions -*- lexical-binding: t; -*-
+
 (defun move-text-internal (arg)
    (cond
     ((and mark-active transient-mark-mode)
@@ -30,3 +32,6 @@
   arg lines up."
    (interactive "*p")
    (move-text-internal (- arg)))
+
+(provide 'functions)
+;;; functions.el ends here)

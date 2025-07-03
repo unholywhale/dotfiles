@@ -1,4 +1,5 @@
-;; C-SPC Visual Mode for Emacs
+;;; visual-selection-mode.el --- C-SPC Visual Mode for Emacs -*- lexical-binding: t; -*-
+
 ;; Makes C-SPC act like "v" in Vim with transient visual selection mode
 ;; Usage: C-SPC i( = select inside parentheses, C-SPC a( = select around parentheses
 ;; Supports: ()[]{}\"'<> with both opening and closing characters
@@ -304,7 +305,7 @@ When called twice in a row, behaves like default C-SPC C-SPC (set mark then deac
 (global-set-key (kbd "C-c d t") 'my/toggle-debug)
 (global-set-key (kbd "C-c d i") 'my/show-buffer-info)
 
-(provide 'visual-mode-selection)
+(provide 'visual-selection-mode)
 
 ;;; Usage:
 ;; C-SPC i( or i) → select inside parentheses
@@ -322,3 +323,5 @@ When called twice in a row, behaves like default C-SPC C-SPC (set mark then deac
 ;; C-SPC C-SPC → normal mark set/deactivate behavior
 ;; C-u C-SPC → exchange point and mark (normal behavior)
 ;; C-c SPC → direct access to original set-mark-command
+
+;;; visual-selection-mode.el ends here
