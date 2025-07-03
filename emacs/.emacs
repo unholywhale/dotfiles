@@ -1,6 +1,7 @@
 (setq dotfiles-dir "~/dotfiles")
 (load-file (format "%s/%s" dotfiles-dir "functions.el"))
 (load-file (format "%s/%s" dotfiles-dir "visual-selection-mode.el"))
+
 (setq user-init-file load-file-name)
 
 (if (eq system-type 'darwin)
@@ -22,7 +23,25 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes nil)
  '(custom-safe-themes
-	 '("4c7228157ba3a48c288ad8ef83c490b94cb29ef01236205e360c2c4db200bb18" "9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0" "95167736741bef2ad3e0543ed545dada5b95fef309883253387a2b14ab67db8d" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "1ea82e39d89b526e2266786886d1f0d3a3fa36c87480fad59d8fab3b03ef576e" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "7613ef56a3aebbec29618a689e47876a72023bbd1b8393efc51c38f5ed3f33d1" "c1638a7061fb86be5b4347c11ccf274354c5998d52e6d8386e997b862773d1d2" "703a3469ae4d2a83fd5648cac0058d57ca215d0fea7541fb852205e4fae94983" "0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "c7a926ad0e1ca4272c90fce2e1ffa7760494083356f6bb6d72481b879afce1f2" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441" "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef" "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" default))
+	 '("73911b9ca48d0db91e4016c8d6e6f6438ca9435171350343fd6b5f35a9b5ef68"
+		 "4c7228157ba3a48c288ad8ef83c490b94cb29ef01236205e360c2c4db200bb18"
+		 "9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0"
+		 "95167736741bef2ad3e0543ed545dada5b95fef309883253387a2b14ab67db8d"
+		 "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7"
+		 "1ea82e39d89b526e2266786886d1f0d3a3fa36c87480fad59d8fab3b03ef576e"
+		 "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74"
+		 "7613ef56a3aebbec29618a689e47876a72023bbd1b8393efc51c38f5ed3f33d1"
+		 "c1638a7061fb86be5b4347c11ccf274354c5998d52e6d8386e997b862773d1d2"
+		 "703a3469ae4d2a83fd5648cac0058d57ca215d0fea7541fb852205e4fae94983"
+		 "0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850"
+		 "c7a926ad0e1ca4272c90fce2e1ffa7760494083356f6bb6d72481b879afce1f2"
+		 "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940"
+		 "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a"
+		 "dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441"
+		 "f079ef5189f9738cf5a2b4507bcaf83138ad22d9c9e32a537d61c9aae25502ef"
+		 "755fc94932731e7c043d6374bcf488a00cc84235d4a3ca0b412d061281be2c64"
+		 "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3"
+		 default))
  '(menu-bar-mode nil)
  '(tool-bar-mode nil))
 
@@ -50,6 +69,8 @@
 ;; Themes
 (use-package zenburn-theme
   :ensure t)
+(use-package timu-spacegrey-theme
+	:ensure t)
 ;; (use-package nord-theme
 ;; 	:ensure t)
 ;; (use-package timu-macos-theme
@@ -59,6 +80,15 @@
 ;; (use-package modus-themes
 ;; 	:ensure t)
 
+;; (use-package nano-modeline
+;; 	:ensure t)
+;; (add-hook 'prog-mode-hook #'nano-modeline-prog-mode)
+;; (add-hook 'term-mode-hook #'nano-modeline-term-mode)
+;; (add-hook 'text-mode-hook #'nano-modeline-text-mode)
+;; (add-hook 'org-mode-hook #'nano-modeline-org-mode) 
+;; (add-hook 'org-capture-mode-hook #'nano-modeline-org-capture-mode)
+;; (add-hook 'org-agenda-mode-hook #'nano-modeline-org-agenda-mode)
+;; (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
 
 (setq-default tab-width 2)
 (setq confirm-kill-processes nil)
@@ -69,6 +99,8 @@
 (setq ring-bell-function 'ignore)
 (delete-selection-mode 1)
 
+(add-to-list 'default-frame-alist
+						 '(internal-border-width . 8))
 ;; Transparency
 ;;(add-to-list 'default-frame-alist '(alpha-background . 95))
 
@@ -86,7 +118,7 @@ If FRAME is omitted or nil, use currently selected frame."
 	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
 	;; (set-face-attribute 'yascroll:thumb-text-area nil :background "dark gray")
 	;; (set-face-attribute 'yascroll:thumb-fringe nil :background "dark gray" :foreground "dark gray")
-	(load-theme 'modus-vivendi-tinted)
+	(load-theme 'timu-spacegrey)
 	(when window-system
 		(set-frame-size (selected-frame) 160 40)
 		;;(frame-recenter)
@@ -562,7 +594,7 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package yasnippet
 	:config
-	(add-to-list 'yas-snippet-dirs (format "%s/%s/%s" dotfiles-dir "emacs.stuff" "yasnippets"))
+	(add-to-list 'yas-snippet-dirs (format "%s/%s" dotfiles-dir "yasnippets"))
 	(yas-global-mode 1))
 (use-package yasnippet-snippets)
 
