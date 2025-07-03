@@ -23,7 +23,6 @@
   :ensure t)
 (use-package timu-spacegrey-theme
   :ensure t)
-
 ;; Icons
 (use-package nerd-icons
   :custom
@@ -39,7 +38,7 @@
   (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
   (setq dashboard-center-content nil)
   (setq dashboard-items '((recents . 5)
-                          (agenda . 5 )
+                          (agenda . 5)
                           (bookmarks . 3)
                           (projects . 3)
                           (registers . 3)))
