@@ -53,6 +53,10 @@
              (nreverse other-matches))))
   (setq vertico-sort-override-function #'my/vertico-sort-history-prefix-first))
 
+(use-package vertico-posframe
+	:config
+	(vertico-posframe-mode 1))
+
 (use-package consult
   :bind (("C-c M-x" . consult-mode-command)
          ("C-s"   . consult-line)
