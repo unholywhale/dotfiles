@@ -19,11 +19,17 @@
 (global-set-key (kbd "M-d") 'my/kill-word-or-whitespace)
 (global-set-key (kbd "M-<backspace>") 'my/backward-kill-word-or-whitespace)
 
-;; Reload init file function
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-  (set-appearance))
+;; Direnv utilities
+(global-set-key (kbd "C-c e r") 'my/direnv-refresh)
+(global-set-key (kbd "C-c e R") 'my/direnv-refresh-with-lsp)
+(global-set-key (kbd "C-c e s") 'my/show-direnv-status)
+(global-set-key (kbd "C-c l r") 'my/force-lsp-restart)
+
+;; Buffer movement keybindings
+(global-set-key (kbd "<C-s-up>")     'buf-move-up)
+(global-set-key (kbd "<C-s-down>")   'buf-move-down)
+(global-set-key (kbd "<C-s-left>")   'buf-move-left)
+(global-set-key (kbd "<C-s-right>")  'buf-move-right)
 
 (provide 'config-keybindings)
 ;;; config-keybindings.el ends here

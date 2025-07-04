@@ -1,5 +1,68 @@
 ;;; functions.el --- Custom utility functions -*- lexical-binding: t; -*-
 
+;; Direnv utilities
+(defun my/direnv-refresh ()
+  "Manually refresh direnv environment for current buffer."
+  (interactive)
+  (when (buffer-file-name)
+    (let* ((file-dir (file-name-directory (buffer-file-name)))
+           (envrc-dir (locate-dominating-file file-dir ".envrc")))
+      (if envrc-dir
+          (let ((default-directory envrc-dir))
+            (direnv-update-environment)
+            ;; Update the project tracking variable
+            (setq my/last-direnv-project envrc-dir)
+            (message "Direnv environment refreshed for %s" (abbreviate-file-name envrc-dir)))
+        (message "No .envrc found for %s" (abbreviate-file-name file-dir))))))
+
+(defun my/direnv-refresh-with-lsp ()
+  "Manually refresh direnv environment and restart LSP."
+  (interactive)
+  (my/direnv-refresh)
+  (when (and (featurep 'lsp-mode)
+             (derived-mode-p 'python-mode 'python-ts-mode))
+    (let* ((file-dir (file-name-directory (buffer-file-name)))
+           (project-root (or (locate-dominating-file file-dir ".envrc")
+                            (when (fboundp 'projectile-project-root)
+                              (projectile-project-root))
+                            file-dir)))
+      ;; Simple approach: just restart workspace
+      (lsp-restart-workspace)
+      (message "LSP restarted for project: %s" (abbreviate-file-name project-root)))))
+
+(defun my/show-direnv-status ()
+  "Show current direnv status and environment variables."
+  (interactive)
+  (if (bound-and-true-p direnv-mode)
+      (let* ((file-dir (if (buffer-file-name)
+                          (file-name-directory (buffer-file-name))
+                        default-directory))
+             (envrc-dir (locate-dominating-file file-dir ".envrc"))
+             (python-path (getenv "PYTHONPATH"))
+             (virtual-env (getenv "VIRTUAL_ENV"))
+             (lsp-root (when (and (featurep 'lsp-mode) (lsp-workspaces))
+                        (condition-case nil
+                            (lsp-workspace-root (cl-first (lsp-workspaces)))
+                          (error "error")))))
+        (if envrc-dir
+            (message "Direnv: %s | VirtualEnv: %s | LSP: %s"
+                     (abbreviate-file-name envrc-dir)
+                     (or (when virtual-env (file-name-nondirectory virtual-env)) "none")
+                     (or (when lsp-root (abbreviate-file-name lsp-root)) "none"))
+          (message "No .envrc found for %s" (abbreviate-file-name file-dir))))
+    (message "Direnv mode not enabled")))
+
+(defun my/force-lsp-restart ()
+  "Force restart LSP workspace for current buffer."
+  (interactive)
+  (when (and (featurep 'lsp-mode) (lsp-workspaces))
+    (lsp-restart-workspace)
+    (message "LSP workspace restarted")))
+
+
+
+
+
 (defun move-text-internal (arg)
    (cond
     ((and mark-active transient-mark-mode)
@@ -101,5 +164,12 @@
       (backward-word)))
     (kill-region (point) end)))
 
+;; Reload init file function
+(defun reload-init-file ()
+  "Reload the init file and apply appearance settings."
+  (interactive)
+  (load-file user-init-file)
+  (set-appearance))
+
 (provide 'functions)
-;;; functions.el ends here)
+;;; functions.el ends here

@@ -3,71 +3,133 @@
 ;; Performance optimization
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
+;; Prevent problematic LSP modules from loading
+(with-eval-after-load 'lsp-mode
+  (require 'lsp-mode)
+  ;; Remove roslyn from the client packages list entirely
+  (setq lsp-client-packages (delq 'lsp-roslyn lsp-client-packages)))
+
 ;; Environment management
 (use-package direnv
   :diminish
   :ensure t
   :config
   (setq direnv-always-show-summary nil)
+  (setq direnv-use-faces-in-summary t)
+  
+  ;; Disable automatic direnv switching to avoid LSP conflicts
+  ;; Use manual C-c e r or C-c e R instead
+  
   (direnv-mode))
 
 ;; LSP configuration
 (use-package lsp-mode
   :diminish
-  :commands lsp
+  :commands lsp lsp-deferred
   :init
-  (setq lsp-keymap-prefix "C-c l"))
+  (setq lsp-keymap-prefix "C-c l")
+  ;; Performance: limit workspace scanning
+  (setq lsp-enable-file-watchers nil)
+  (setq lsp-auto-guess-root t)  ; Let it find project root properly
+  ;; Reduce message verbosity
+  (setq lsp-log-io nil)
+  (setq lsp-print-performance nil)
+  (setq lsp-inhibit-message t)
+  (setq lsp-message-project-root-warning t)
+  (setq lsp-eldoc-render-all nil)
+  ;; Project isolation settings
+  (setq lsp-auto-guess-root t)
+  (setq lsp-restart 'auto-restart)
+  (setq lsp-keep-workspace-alive nil)
+  ;; Force separate workspaces per project
+  (setq lsp-enable-file-watchers nil)
+  (setq lsp-server-install-dir (expand-file-name "lsp/" user-emacs-directory))
+  ;; Disable headerline breadcrumb to prevent flickering during restarts
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-modeline-code-actions-enable nil)
+  (setq lsp-modeline-diagnostics-enable t)
+  :config
+  ;; Disable problematic clients
+  (setq lsp-disabled-clients '(roslyn mspyls pylsp pyls ruff-lsp semgrep-ls))
+  
+  ;; Suppress verbose initialization and connection messages
+  (defun my/lsp-message-filter (orig-fun &rest args)
+    "Filter out verbose LSP initialization and connection messages."
+    (let ((message (car args)))
+      (unless (and (stringp message)
+                   (or (string-match-p "initialized successfully in folders:" message)
+                       (string-match-p "Connected to \\[pyright:" message)
+                       (string-match-p "LSP :: Connected to" message)))
+        (apply orig-fun args))))
+  
+  (advice-add 'lsp--info :around #'my/lsp-message-filter)
+  (advice-add 'lsp-workspace-show-message :around #'my/lsp-message-filter))
 
 (use-package dap-mode)
 
 (use-package lsp-pyright
   :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))  ; or lsp-deferred
+  :hook ((python-mode python-ts-mode) . lsp-deferred)
+  :config
+  ;; Limit Pyright to current project only
+  (setq lsp-pyright-multi-root nil)
+  ;; Don't auto-search for additional Python paths
+  (setq lsp-pyright-auto-search-paths nil)
+  
+  ;; Track LSP project changes
+  (add-hook 'lsp-after-open-hook
+            (lambda ()
+              (when (derived-mode-p 'python-mode 'python-ts-mode)
+                (setq my/last-lsp-project 
+                      (or (locate-dominating-file default-directory ".envrc")
+                          (when (fboundp 'projectile-project-root)
+                            (projectile-project-root))
+                          default-directory))))))
 
-;; Tree-sitter configuration
-(setq treesit-language-source-alist
-  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-    (c "https://github.com/tree-sitter/tree-sitter-c")
-    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-    (cmake "https://github.com/uyha/tree-sitter-cmake")
-    (css "https://github.com/tree-sitter/tree-sitter-css")
-    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-    (go "https://github.com/tree-sitter/tree-sitter-go")
-    (html "https://github.com/tree-sitter/tree-sitter-html")
-    (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-    (json "https://github.com/tree-sitter/tree-sitter-json")
-    (make "https://github.com/alemuller/tree-sitter-make")
-    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-    (python "https://github.com/tree-sitter/tree-sitter-python")
-    (toml "https://github.com/tree-sitter/tree-sitter-toml")
-    (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-    (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-(use-package tree-sitter
-  :hook
-  ((css-mode 
-    c-or-c++-mode
-    c-mode
-    c++-mode
-    cmake-mode
-    js-mode
-    json-mode
-    python-mode
-    typescript-mode
-    yaml-mode)
-   . tree-sitter-enable)
-  (tree-sitter-after-on . lsp-deferred)
-  :preface
-  (defun tree-sitter-enable ()
-    (tree-sitter-mode t))
-  :defer t)
 
-(use-package tree-sitter-langs
-  :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode))
+;; Built-in tree-sitter (Emacs 29+)
+(when (treesit-available-p)
+  ;; Configure language sources
+  (setq treesit-language-source-alist
+        '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+          (c "https://github.com/tree-sitter/tree-sitter-c")
+          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+          (cmake "https://github.com/uyha/tree-sitter-cmake")
+          (css "https://github.com/tree-sitter/tree-sitter-css")
+          (go "https://github.com/tree-sitter/tree-sitter-go")
+          (html "https://github.com/tree-sitter/tree-sitter-html")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json "https://github.com/tree-sitter/tree-sitter-json")
+          (python "https://github.com/tree-sitter/tree-sitter-python")
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+          (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  
+  ;; Auto-enable treesit modes for supported languages
+  (setq major-mode-remap-alist
+        '((python-mode . python-ts-mode)
+          (css-mode . css-ts-mode)
+          (js-mode . js-ts-mode)
+          (javascript-mode . js-ts-mode)
+          (json-mode . json-ts-mode)
+          (c-mode . c-ts-mode)
+          (c++-mode . c++-ts-mode)
+          (typescript-mode . typescript-ts-mode)
+          (yaml-mode . yaml-ts-mode)))
+  
+  ;; Install grammars automatically if missing
+  (defun my/install-treesit-grammars ()
+    "Install tree-sitter grammars for configured languages."
+    (interactive)
+    (dolist (lang '(python css javascript json c cpp typescript yaml bash))
+      (unless (treesit-language-available-p lang)
+        (condition-case err
+            (treesit-install-language-grammar lang)
+          (error (message "Failed to install grammar for %s: %s" lang err))))))
+  
+  ;; Install grammars on first load (but don't block startup)
+  (run-with-idle-timer 1 nil #'my/install-treesit-grammars))
 
 ;; Programming language modes
 (use-package yaml-mode)
@@ -85,29 +147,10 @@
 (use-package pyvenv
     :ensure t)
 
-;; Copilot
-(use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
-  :ensure t)
-(setq copilot-indent-offset-warning-disable t)
-;; Accept copilot completion on shift-tab
-(define-key copilot-mode-map (kbd "<backtab>") 'copilot-accept-completion-by-line)
-
 ;; Parentheses handling
 (use-package smartparens
   :init
   (smartparens-global-mode))
-
-;; Multiple cursors
-(use-package multiple-cursors
-  :bind (("C-<" . 'mc/mark-previous-like-this)
-         ("C->" . 'mc/mark-next-like-this)
-         ("C-S-<mouse-1>" . 'mc/add-cursor-on-click)
-         (:prefix "C-c m" :prefix-map mc-map
-                  ("d" . 'mc/mark-all-like-this-dwim)
-                  ("a" . 'mc/mark-all-like-this)
-                  ("n" . 'mc/insert-numbers)
-                  ("l" . 'mc/insert-letters))))
 
 (provide 'config-development)
 ;;; config-development.el ends here

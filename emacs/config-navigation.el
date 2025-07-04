@@ -18,10 +18,24 @@
   :straight (:host github :repo "lukhas/buffer-move" :files ("buffer-move.el"))
   :ensure t)
 
-(global-set-key (kbd "<C-s-up>")     'buf-move-up)
-(global-set-key (kbd "<C-s-down>")   'buf-move-down)
-(global-set-key (kbd "<C-s-left>")   'buf-move-left)
-(global-set-key (kbd "<C-s-right>")  'buf-move-right)
+;; Multiple cursors
+(use-package multiple-cursors
+  :bind (("C-<" . 'mc/mark-previous-like-this)
+         ("C->" . 'mc/mark-next-like-this)
+         ("C-S-<mouse-1>" . 'mc/add-cursor-on-click)
+         (:prefix "C-c m" :prefix-map mc-map
+                  ("d" . 'mc/mark-all-like-this-dwim)
+                  ("a" . 'mc/mark-all-like-this)
+                  ("n" . 'mc/insert-numbers)
+                  ("l" . 'mc/insert-letters))))
+
+;; Dired configuration
+(add-hook 'dired-load-hook
+          (function (lambda () (load "dired-x"))))
+
+(if (eq system-type 'darwin)
+    (setq insert-directory-program "gls" dired-use-ls-dired t))
+(setq dired-listing-switches "-agh --group-directories-first")
 
 (provide 'config-navigation)
 ;;; config-navigation.el ends here

@@ -11,6 +11,30 @@
 (delete-selection-mode 1)
 (scroll-bar-mode 0)
 
+;; Backup file settings (prevents delays when opening files with ~ backups)
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+(setq backup-by-copying t)
+(setq delete-old-versions t)
+(setq kept-new-versions 6)
+(setq kept-old-versions 2)
+(setq version-control t)
+
+;; Auto-save settings to prevent recovery prompts
+(setq auto-save-default t)
+(setq auto-save-timeout 20)
+(setq auto-save-interval 200)
+;; Suppress auto-save recovery prompts
+(setq auto-save-list-file-prefix nil)
+
+;; Disable auto-save recovery checking entirely
+(setq auto-save-visited-mode nil)
+;; Disable the auto-save recovery prompt
+(advice-add 'after-find-file :around
+            (lambda (orig-fun &rest args)
+              "Skip auto-save recovery prompts by setting noauto to t."
+              (apply orig-fun (append (butlast args 3) '(nil nil t)))))
+
 ;; Frame settings
 (add-to-list 'default-frame-alist
              '(internal-border-width . 8))
@@ -93,14 +117,6 @@ If FRAME is omitted or nil, use currently selected frame."
                 (with-selected-frame frame
                   (set-appearance))))
   (set-appearance))
-
-;; Dired configuration
-(add-hook 'dired-load-hook
-          (function (lambda () (load "dired-x"))))
-
-(if (eq system-type 'darwin)
-    (setq insert-directory-program "gls" dired-use-ls-dired t))
-(setq dired-listing-switches "-agh --group-directories-first")
 
 (provide 'config-ui)
 ;;; config-ui.el ends here
