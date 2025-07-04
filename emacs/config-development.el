@@ -16,10 +16,8 @@
   :config
   (setq direnv-always-show-summary nil)
   (setq direnv-use-faces-in-summary t)
-  
   ;; Disable automatic direnv switching to avoid LSP conflicts
   ;; Use manual C-c e r or C-c e R instead
-  
   (direnv-mode))
 
 ;; LSP configuration
@@ -51,7 +49,6 @@
   :config
   ;; Disable problematic clients
   (setq lsp-disabled-clients '(roslyn mspyls pylsp pyls ruff-lsp semgrep-ls))
-  
   ;; Suppress verbose initialization and connection messages
   (defun my/lsp-message-filter (orig-fun &rest args)
     "Filter out verbose LSP initialization and connection messages."
@@ -61,7 +58,6 @@
                        (string-match-p "Connected to \\[pyright:" message)
                        (string-match-p "LSP :: Connected to" message)))
         (apply orig-fun args))))
-  
   (advice-add 'lsp--info :around #'my/lsp-message-filter)
   (advice-add 'lsp-workspace-show-message :around #'my/lsp-message-filter))
 
@@ -75,7 +71,6 @@
   (setq lsp-pyright-multi-root nil)
   ;; Don't auto-search for additional Python paths
   (setq lsp-pyright-auto-search-paths nil)
-  
   ;; Track LSP project changes
   (add-hook 'lsp-after-open-hook
             (lambda ()
