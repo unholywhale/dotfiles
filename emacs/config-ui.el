@@ -37,7 +37,7 @@
 
 ;; Frame settings
 (add-to-list 'default-frame-alist
-             '(internal-border-width . 8))
+             '(internal-border-width . 5))
 
 ;; Transparency (commented out)
 ;;(add-to-list 'default-frame-alist '(alpha-background . 95))
@@ -52,22 +52,9 @@
   :custom
   (nerd-icons-font-family "JetBrainsMono Nerd Font"))
 
-;; Dashboard
-(use-package dashboard
-  :ensure t 
-  :init
-  (setq initial-buffer-choice 'dashboard-open)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
-  (setq dashboard-center-content nil)
-  (setq dashboard-items '((recents . 5)
-                          (agenda . 5)
-                          (bookmarks . 3)
-                          (projects . 3)
-                          (registers . 3)))
-  :config
-  (dashboard-setup-startup-hook))
+;; Use scratch buffer instead of dashboard
+(setq initial-buffer-choice nil)
+(setq initial-scratch-message nil)
 
 ;; Visual enhancements
 (use-package beacon
@@ -90,15 +77,15 @@
 ;; Line numbers for programming modes
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
-;; Frame centering function
-(defun frame-recenter (&optional frame)
-  "Center FRAME on the screen.
-FRAME can be a frame name, a terminal name, or a frame.
-If FRAME is omitted or nil, use currently selected frame."
-  (interactive)
-  (unless (eq 'maximised (frame-parameter nil 'fullscreen))
-    (modify-frame-parameters
-     frame '((user-position . t) (top . 0.4) (left . 0.4)))))
+;; Mood-line - minimal modeline
+(use-package mood-line
+  :ensure t
+  :config
+  (mood-line-mode)
+  ;; Add padding to modeline without changing font size
+  (custom-set-faces
+   '(mode-line ((t (:box (:line-width 6 :style flat-button)))))
+   '(mode-line-inactive ((t (:box (:line-width 6 :style flat-button)))))))
 
 ;; Appearance setup function
 (defun set-appearance ()
@@ -108,7 +95,7 @@ If FRAME is omitted or nil, use currently selected frame."
   (when (and (not noninteractive) (locate-library "timu-spacegrey-theme"))
     (load-theme 'timu-spacegrey t))
   (when window-system
-    (set-frame-size (selected-frame) 160 40)))
+    (set-frame-size (selected-frame) 120 35)))
 
 ;; Apply appearance settings
 (if (daemonp)
