@@ -59,8 +59,7 @@
     (interactive)
     (my-vterm-popup-toggle))))
 
-;; Use our custom popup instead of vterm-toggle
-(global-set-key (kbd "C-`") 'my-vterm-popup-toggle)
+
 
 ;; Eshell configuration
 (use-package eshell-toggle

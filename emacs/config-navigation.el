@@ -7,11 +7,7 @@
 
 ;; Ace jump mode for quick navigation
 (setq ace-jump-mode-case-fold nil)
-(use-package ace-jump-mode
-  :bind
-  (("C-c SPC" . ace-jump-word-mode)
-   ("C-s-c SPC" . ace-jump-char-mode)
-   ("S-C-u C-c SPC" . ace-jump-line-mode)))
+(use-package ace-jump-mode)
 
 ;; Buffer movement
 (use-package buffer-move
@@ -19,15 +15,27 @@
   :ensure t)
 
 ;; Multiple cursors
-(use-package multiple-cursors
-  :bind (("C-<" . 'mc/mark-previous-like-this)
-         ("C->" . 'mc/mark-next-like-this)
-         ("C-S-<mouse-1>" . 'mc/add-cursor-on-click)
-         (:prefix "C-c m" :prefix-map mc-map
-                  ("d" . 'mc/mark-all-like-this-dwim)
-                  ("a" . 'mc/mark-all-like-this)
-                  ("n" . 'mc/insert-numbers)
-                  ("l" . 'mc/insert-letters))))
+(use-package multiple-cursors)
+
+;; Treemacs - file tree sidebar
+(use-package treemacs
+  :ensure t
+  :config
+  ;; Basic treemacs settings
+  (setq treemacs-width 30)
+  (setq treemacs-follow-mode t)
+  (setq treemacs-filewatch-mode t)
+  (setq treemacs-fringe-indicator-mode 'always)
+  ;; Monochrome icons - folders have icons, files don't
+  (setq treemacs-no-png-images t)
+  (setq treemacs-show-hidden-files t)
+  ;; Remove file icons - just show file names
+  (setq treemacs-icon-fallback ""))
+
+;; Treemacs projectile integration
+(use-package treemacs-projectile
+  :ensure t
+  :after (treemacs projectile))
 
 ;; Dired configuration
 (add-hook 'dired-load-hook

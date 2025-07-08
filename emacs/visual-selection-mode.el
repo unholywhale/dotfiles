@@ -291,19 +291,7 @@ When called twice in a row, behaves like default C-SPC C-SPC (set mark then deac
     (my/enter-visual-mode)
     (my/visual-mode-dispatch))))
 
-;;; Key bindings
-;; Replace the default C-SPC binding
-(global-set-key (kbd "C-SPC") 'my/enhanced-set-mark-command)
-
-;; Also bind to C-@ (traditional alternative for C-SPC)
-(global-set-key (kbd "C-@") 'my/enhanced-set-mark-command)
-
-;; Provide a way to access the original set-mark-command if needed
-(global-set-key (kbd "C-c SPC") 'set-mark-command)
-
-;; Debug helper bindings
-(global-set-key (kbd "C-c d t") 'my/toggle-debug)
-(global-set-key (kbd "C-c d i") 'my/show-buffer-info)
+;;; Key bindings are now defined in config-keybindings.el
 
 (provide 'visual-selection-mode)
 

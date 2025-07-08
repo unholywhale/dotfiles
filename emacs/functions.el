@@ -84,13 +84,13 @@
             (transpose-lines arg))
        (forward-line -1)))))
 
-(defun move-text-down (arg)
+(defun my/move-text-down (arg)
    "Move region (transient-mark-mode active) or current line
   arg lines down."
    (interactive "*p")
    (move-text-internal arg))
 
-(defun move-text-up (arg)
+(defun my/move-text-up (arg)
    "Move region (transient-mark-mode active) or current line
   arg lines up."
    (interactive "*p")
@@ -163,6 +163,15 @@
      (t
       (backward-word)))
     (kill-region (point) end)))
+
+;; Notes directory configuration
+(defvar my/notes-directory "~/personal/notes"
+  "Directory containing personal notes.")
+
+(defun my/open-notes-directory ()
+  "Open the notes directory in dired."
+  (interactive)
+  (dired (expand-file-name my/notes-directory)))
 
 ;; Reload init file function
 (defun reload-init-file ()

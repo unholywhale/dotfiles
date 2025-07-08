@@ -1,8 +1,10 @@
 ;;; config-keybindings.el --- Keybindings configuration -*- lexical-binding: t; -*-
+;; Window movement
+(global-set-key (kbd "C-<tab>") 'other-window)
 
 ;; Text manipulation
-(global-set-key (kbd "M-<up>") 'move-text-up)
-(global-set-key (kbd "M-<down>") 'move-text-down)
+(global-set-key (kbd "M-<up>") 'my/move-text-up)
+(global-set-key (kbd "M-<down>") 'my/move-text-down)
 
 ;; Text scaling
 (global-set-key (kbd "C-=") 'text-scale-increase)
@@ -25,11 +27,82 @@
 (global-set-key (kbd "C-c e s") 'my/show-direnv-status)
 (global-set-key (kbd "C-c l r") 'my/force-lsp-restart)
 
+;; Terminal utilities
+(global-set-key (kbd "C-`") 'my-vterm-popup-toggle)
+(global-set-key (kbd "C-c t n") 'vterm-new-instance)
+(global-set-key (kbd "C-c t p") 'vterm-popup)
+
+;; Navigation utilities
+(global-set-key (kbd "C-c SPC") 'ace-jump-word-mode)
+(global-set-key (kbd "C-s-c SPC") 'ace-jump-char-mode)
+(global-set-key (kbd "S-C-u C-c SPC") 'ace-jump-line-mode)
+
+;; Multiple cursors
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+(global-set-key (kbd "C-c m d") 'mc/mark-all-like-this-dwim)
+(global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c m n") 'mc/insert-numbers)
+(global-set-key (kbd "C-c m l") 'mc/insert-letters)
+
+;; Treemacs
+(global-set-key (kbd "C-x t t") 'treemacs)
+(global-set-key (kbd "C-x t s") 'treemacs-select-window)
+(global-set-key (kbd "C-1") 'treemacs)
+
+;; Consult bindings
+(global-set-key (kbd "C-c M-x") 'consult-mode-command)
+(global-set-key (kbd "C-s") 'consult-line)
+(global-set-key (kbd "C-c h") 'consult-history)
+(global-set-key (kbd "C-c k") 'consult-kmacro)
+(global-set-key (kbd "C-c i") 'consult-info)
+(global-set-key (kbd "C-x M-:") 'consult-complex-command)
+(global-set-key (kbd "C-x b") 'consult-buffer)
+(global-set-key (kbd "C-x 4 b") 'consult-buffer-other-window)
+(global-set-key (kbd "C-x 5 b") 'consult-buffer-other-frame)
+(global-set-key (kbd "C-x t b") 'consult-buffer-other-tab)
+(global-set-key (kbd "C-x r b") 'consult-bookmark)
+(global-set-key (kbd "C-x p b") 'consult-project-buffer)
+(global-set-key (kbd "M-#") 'consult-register-load)
+(global-set-key (kbd "M-'") 'consult-register-store)
+(global-set-key (kbd "C-M-#") 'consult-register)
+(global-set-key (kbd "M-y") 'consult-yank-pop)
+(global-set-key (kbd "M-g e") 'consult-compile-error)
+(global-set-key (kbd "M-g f") 'consult-flymake)
+(global-set-key (kbd "M-g g") 'consult-goto-line)
+(global-set-key (kbd "M-g M-g") 'consult-goto-line)
+(global-set-key (kbd "M-g o") 'consult-outline)
+(global-set-key (kbd "M-g m") 'consult-mark)
+(global-set-key (kbd "M-g k") 'consult-global-mark)
+(global-set-key (kbd "M-g i") 'consult-imenu)
+(global-set-key (kbd "M-g I") 'consult-imenu-multi)
+
+;; Company completion
+(global-set-key (kbd "C-c y") 'company-yasnippet)
+
+;; Embark
+(global-set-key (kbd "C-.") 'embark-act)
+(global-set-key (kbd "M-.") 'embark-dwim)
+(global-set-key (kbd "C-h B") 'embark-bindings)
+
+;; Marginalia
+(global-set-key (kbd "M-A") 'marginalia-cycle)
+
 ;; Buffer movement keybindings
 (global-set-key (kbd "<C-s-up>")     'buf-move-up)
 (global-set-key (kbd "<C-s-down>")   'buf-move-down)
 (global-set-key (kbd "<C-s-left>")   'buf-move-left)
 (global-set-key (kbd "<C-s-right>")  'buf-move-right)
+
+;; Visual selection mode keybindings
+(global-set-key (kbd "C-SPC") 'my/enhanced-set-mark-command)
+(global-set-key (kbd "C-@") 'set-mark-command)
+(global-set-key (kbd "C-c d t") 'my/toggle-debug)
+(global-set-key (kbd "C-c d i") 'my/show-buffer-info)
+
+;; Notes directory
+(global-set-key (kbd "C-c n d") 'my/open-notes-directory)
 
 (provide 'config-keybindings)
 ;;; config-keybindings.el ends here
