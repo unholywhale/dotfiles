@@ -125,14 +125,16 @@
       (skip-chars-forward " \t\n"))
      ;; If at a quote, kill the entire quoted string
      ((looking-at "[\"']")
-      (let ((quote-char (char-after)))
+      (let ((quote-char (char-after))
+            (line-end (line-end-position)))
         (forward-char) ; move past opening quote
         (while (and (not (eobp))
+                    (< (point) line-end) ; don't go past current line
                     (not (= (char-after) quote-char)))
           (if (= (char-after) ?\\)
               (forward-char 2) ; skip escaped character
             (forward-char)))
-        (when (= (char-after) quote-char)
+        (when (and (not (eobp)) (= (char-after) quote-char))
           (forward-char)))) ; include closing quote
      ;; Otherwise, kill to end of word (including single spaces)
      (t
@@ -149,12 +151,14 @@
       (skip-chars-backward " \t\n"))
      ;; If at a quote (looking back), kill the entire quoted string
      ((looking-back "[\"']" (line-beginning-position))
-      (let ((quote-char (char-before)))
+      (let ((quote-char (char-before))
+            (line-start (line-beginning-position)))
         (backward-char) ; move past closing quote
         (while (and (not (bobp))
+                    (> (point) line-start) ; don't go past current line
                     (not (and (= (char-before) quote-char)
                               ;; Check if this quote is not escaped
-                              (or (= (point) (line-beginning-position))
+                              (or (= (point) line-start)
                                   (not (= (char-before (1- (point))) ?\\))))))
           (backward-char))
         (when (and (not (bobp)) (= (char-before) quote-char))
