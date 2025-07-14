@@ -174,6 +174,34 @@
   (dired (expand-file-name my/notes-directory)))
 
 ;; Reload init file function
+;; Python debugging utilities
+(defun my/python-debug-current-file ()
+  "Debug the current Python file."
+  (interactive)
+  (when (and (derived-mode-p 'python-mode 'python-ts-mode)
+             (buffer-file-name))
+    (let ((debug-config (list :type "python"
+                              :request "launch"
+                              :program (buffer-file-name)
+                              :cwd (file-name-directory (buffer-file-name))
+                              :args []
+                              :console "integratedTerminal"
+                              :name "Python :: Debug current file")))
+      (dap-debug debug-config))))
+
+(defun my/python-debug-current-file-alt ()
+  "Alternative debug function for current Python file."
+  (interactive)
+  (when (and (derived-mode-p 'python-mode 'python-ts-mode)
+             (buffer-file-name))
+    (let ((debug-config (list :type "python"
+                              :request "launch"
+                              :program (buffer-file-name)
+                              :cwd (file-name-directory (buffer-file-name))
+                              :args []
+                              :console "integratedTerminal"
+                              :name "Python :: Debug current file")))
+      (dap-debug debug-config))))
 (defun reload-init-file ()
   "Reload the init file and apply appearance settings."
   (interactive)
