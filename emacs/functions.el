@@ -59,10 +59,6 @@
     (lsp-restart-workspace)
     (message "LSP workspace restarted")))
 
-
-
-
-
 (defun move-text-internal (arg)
    (cond
     ((and mark-active transient-mark-mode)
@@ -177,7 +173,6 @@
   (interactive)
   (dired (expand-file-name my/notes-directory)))
 
-;; Reload init file function
 ;; Python debugging utilities
 (defun my/python-debug-current-file ()
   "Debug the current Python file."
@@ -206,11 +201,107 @@
                               :console "integratedTerminal"
                               :name "Python :: Debug current file")))
       (dap-debug debug-config))))
+
+;; Theme management functions
+(defun my/switch-theme ()
+  "Interactively switch between available themes."
+  (interactive)
+  (let ((theme (intern (completing-read "Choose theme: "
+                                        (mapcar #'symbol-name my/available-themes)
+                                        nil t))))
+    (my/load-theme theme)))
+
+(defun my/cycle-theme ()
+  "Cycle to the next available theme."
+  (interactive)
+  (let* ((current-index (or (cl-position my/current-theme my/available-themes) 0))
+         (next-index (mod (1+ current-index) (length my/available-themes)))
+         (next-theme (nth next-index my/available-themes)))
+    (my/load-theme next-theme)))
+
+(defun my/set-theme (theme)
+  "Set the theme and save it as current."
+  (interactive (list (intern (completing-read "Set theme: "
+                                              (mapcar #'symbol-name my/available-themes)
+                                              nil t))))
+  (setq my/current-theme theme)
+  (my/load-theme theme))
+
+;; Configuration reloading functions
+(defvar my/config-backup-vars nil
+  "Backup of important variables before config reload.")
+
+(defun my/backup-config-state ()
+  "Backup current configuration state."
+  (setq my/config-backup-vars
+        `((my/current-theme . ,my/current-theme)
+          (my/notes-directory . ,my/notes-directory))))
+
+(defun my/clean-config-state ()
+  "Clean up configuration state for fresh reload."
+  ;; Disable all themes
+  (mapc #'disable-theme custom-enabled-themes)
+
+  ;; Clear package autoloads cache
+  (setq package-activated-list nil)
+
+  ;; Clear some hooks that might accumulate
+  (setq after-make-frame-functions nil)
+
+  ;; Reset custom variables to clean state
+  (setq custom-enabled-themes nil))
+
+(defun my/reload-config-clean ()
+  "Reload configuration with cleanup of previous state."
+  (interactive)
+  (message "Reloading configuration with cleanup...")
+  (my/backup-config-state)
+  (my/clean-config-state)
+
+  ;; Reload the configuration
+  (load-file user-init-file)
+
+  ;; Apply appearance
+  (when (fboundp 'set-appearance)
+    (set-appearance))
+
+  (message "Configuration reloaded cleanly"))
+
+(defun my/restart-emacs-daemon ()
+  "Restart the Emacs daemon."
+  (interactive)
+  (when (daemonp)
+    (if (yes-or-no-p "Restart Emacs daemon? This will close all frames. ")
+        (progn
+          (message "Restarting Emacs daemon...")
+          ;; Save all buffers
+          (save-some-buffers t)
+          ;; Kill daemon and restart
+          (kill-emacs))
+      (message "Daemon restart cancelled")))
+  (unless (daemonp)
+    (if (yes-or-no-p "Restart Emacs? ")
+        (restart-emacs)
+      (message "Restart cancelled"))))
+
+(defun my/reload-config-or-restart ()
+  "Smart reload: try clean reload first, offer restart if needed."
+  (interactive)
+  (let ((choice (read-char-choice
+                 "Reload config: (c)lean reload, (r)estart daemon, (s)imple reload? "
+                 '(?c ?r ?s))))
+    (cond
+     ((eq choice ?c) (my/reload-config-clean))
+     ((eq choice ?r) (my/restart-emacs-daemon))
+     ((eq choice ?s) (reload-init-file)))))
+
+;; Keep the old function for compatibility
 (defun reload-init-file ()
-  "Reload the init file and apply appearance settings."
+  "Simple reload of init file (legacy function)."
   (interactive)
   (load-file user-init-file)
-  (set-appearance))
+  (when (fboundp 'set-appearance)
+    (set-appearance)))
 
 (provide 'functions)
 ;;; functions.el ends here

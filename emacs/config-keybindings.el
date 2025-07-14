@@ -108,6 +108,13 @@
 (global-set-key (kbd "C-c T s") 'my/switch-theme)
 (global-set-key (kbd "C-c T c") 'my/cycle-theme)
 (global-set-key (kbd "C-c T t") 'my/set-theme)
+
+;; Configuration reloading
+(global-set-key (kbd "C-c r r") 'my/reload-config-or-restart)
+(global-set-key (kbd "C-c r c") 'my/reload-config-clean)
+(global-set-key (kbd "C-c r s") 'reload-init-file)
+(global-set-key (kbd "C-c r d") 'my/restart-emacs-daemon)
+
 ;; Python debugging with dap-mode
 (global-set-key (kbd "C-c d b") 'dap-breakpoint-toggle)
 (global-set-key (kbd "C-c d d") 'dap-debug)
@@ -121,5 +128,6 @@
 (global-set-key (kbd "C-c d q") 'dap-disconnect)
 (global-set-key (kbd "C-c d u") 'dap-ui-mode)
 (global-set-key (kbd "C-c d h") 'dap-hydra)
+
 (provide 'config-keybindings)
 ;;; config-keybindings.el ends here

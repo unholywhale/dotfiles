@@ -20,6 +20,33 @@
 ;; Essential packages
 (use-package diminish)
 (use-package general)
+(use-package restart-emacs
+  :ensure t)
+
+;; Which-key for keybinding hints
+(use-package which-key
+  :ensure t
+  :diminish
+  :config
+  (which-key-mode 1)
+  (setq which-key-idle-delay 0.5)
+  (setq which-key-popup-type 'side-window)
+  (setq which-key-side-window-location 'bottom)
+  (setq which-key-side-window-max-height 0.25)
+
+  ;; Add descriptive prefixes
+  (which-key-add-key-based-replacements
+    "C-c d" "debug"
+    "C-c e" "environment"
+    "C-c l" "lsp"
+    "C-c m" "multiple-cursors"
+    "C-c n" "notes"
+    "C-c r" "reload"
+    "C-c t" "terminal"
+    "C-c T" "themes"
+    "C-c y" "yasnippet"
+    "C-x t" "treemacs"
+    "M-g" "goto"))
 
 (provide 'config-packages)
 ;;; config-packages.el ends here
