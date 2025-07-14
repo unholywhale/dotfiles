@@ -61,7 +61,29 @@
   (advice-add 'lsp--info :around #'my/lsp-message-filter)
   (advice-add 'lsp-workspace-show-message :around #'my/lsp-message-filter))
 
-(use-package dap-mode)
+;; Debug Adapter Protocol (DAP) for interactive debugging
+(use-package dap-mode
+  :ensure t
+  :hook ((dap-stopped . (lambda (arg) (call-interactively #'dap-hydra)))
+         (dap-session-created . (lambda (arg) (dap-ui-mode 1))))
+  :config
+  ;; Enable dap-mode features
+  (dap-auto-configure-mode)
+
+  ;; UI improvements
+  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+
+  ;; Python debugging configuration
+  (require 'dap-python)
+
+  ;; Configure Python debugger
+  (setq dap-python-debugger 'debugpy)
+
+  ;; Load hydra (part of dap-mode)
+  (require 'dap-hydra)
+
+  ;; Load UI (part of dap-mode)
+  (require 'dap-ui))
 
 (use-package lsp-pyright
   :ensure t
@@ -97,6 +119,7 @@
           (html "https://github.com/tree-sitter/tree-sitter-html")
           (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
           (json "https://github.com/tree-sitter/tree-sitter-json")
+					(rust "https://github.com/tree-sitter/tree-sitter-rust")
           (python "https://github.com/tree-sitter/tree-sitter-python")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
           (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
@@ -111,6 +134,7 @@
           (json-mode . json-ts-mode)
           (c-mode . c-ts-mode)
 					(go-mode . go-ts-mode)
+					(rust-mode . rust-ts-mode)
           (c++-mode . c++-ts-mode)
           (typescript-mode . typescript-ts-mode)
           (yaml-mode . yaml-ts-mode)))
@@ -132,6 +156,7 @@
 (use-package yaml-mode)
 (use-package qml-mode)
 (use-package python-mode)
+(use-package rust-mode)
 (use-package dockerfile-mode)
 (use-package yuck-mode
   :mode "\\.yuck\\'")

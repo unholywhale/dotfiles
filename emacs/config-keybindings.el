@@ -104,5 +104,18 @@
 ;; Notes directory
 (global-set-key (kbd "C-c n d") 'my/open-notes-directory)
 
+;; Python debugging with dap-mode
+(global-set-key (kbd "C-c d b") 'dap-breakpoint-toggle)
+(global-set-key (kbd "C-c d d") 'dap-debug)
+(global-set-key (kbd "C-c d f") 'my/python-debug-current-file)
+(global-set-key (kbd "C-c d F") 'my/python-debug-current-file-alt)
+(global-set-key (kbd "C-c d r") 'dap-debug-restart)
+(global-set-key (kbd "C-c d s") 'dap-step-in)
+(global-set-key (kbd "C-c d n") 'dap-next)
+(global-set-key (kbd "C-c d o") 'dap-step-out)
+(global-set-key (kbd "C-c d c") 'dap-continue)
+(global-set-key (kbd "C-c d q") 'dap-disconnect)
+(global-set-key (kbd "C-c d u") 'dap-ui-mode)
+(global-set-key (kbd "C-c d h") 'dap-hydra)
 (provide 'config-keybindings)
 ;;; config-keybindings.el ends here
