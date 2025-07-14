@@ -104,6 +104,10 @@
 ;; Notes directory
 (global-set-key (kbd "C-c n d") 'my/open-notes-directory)
 
+;; Theme switching (moved to C-c T to avoid conflict with terminal)
+(global-set-key (kbd "C-c T s") 'my/switch-theme)
+(global-set-key (kbd "C-c T c") 'my/cycle-theme)
+(global-set-key (kbd "C-c T t") 'my/set-theme)
 ;; Python debugging with dap-mode
 (global-set-key (kbd "C-c d b") 'dap-breakpoint-toggle)
 (global-set-key (kbd "C-c d d") 'dap-debug)

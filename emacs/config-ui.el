@@ -42,7 +42,33 @@
 ;; Transparency (commented out)
 ;;(add-to-list 'default-frame-alist '(alpha-background . 95))
 
-;; Themes
+;; Theme management
+(defvar my/current-theme 'modus-operandi-tinted
+  "Current theme to use.")
+
+(defvar my/available-themes '(timu-spacegrey
+															zenburn
+															modus-operandi
+															modus-operandi-tinted
+															modus-vivendi
+															modus-vivendi-tinted
+															material
+															adwaita
+															dichromacy
+															leuven-dark
+															leuven
+															manoj-dark
+															misterioso
+															tango-dark
+															tango
+															tsdh-dark
+															tsdh-light
+															wheatgrass
+															whiteboard
+															wombat)
+  "List of available themes.")
+
+;; Install theme packages
 (use-package zenburn-theme
   :ensure t)
 (use-package timu-spacegrey-theme
@@ -87,13 +113,25 @@
    '(mode-line ((t (:box (:line-width 6 :style flat-button)))))
    '(mode-line-inactive ((t (:box (:line-width 6 :style flat-button)))))))
 
+;; Theme loading function
+(defun my/load-theme (theme)
+  "Load the specified theme safely."
+  (when (and (not noninteractive) theme)
+    (let ((theme-package (format "%s-theme" theme)))
+      (when (locate-library theme-package)
+        ;; Disable all custom themes first
+        (mapc #'disable-theme custom-enabled-themes)
+        ;; Load the new theme
+        (load-theme theme t)
+        (setq my/current-theme theme)
+        (message "Loaded theme: %s" theme)))))
+
 ;; Appearance setup function
 (defun set-appearance ()
   (message "Setting appearance...")
   (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
-  ;; Load theme (needed for both daemon and non-daemon to ensure it's applied to frames)
-  (when (and (not noninteractive) (locate-library "timu-spacegrey-theme"))
-    (load-theme 'timu-spacegrey t))
+  ;; Load current theme
+  (my/load-theme my/current-theme)
   (when window-system
     (set-frame-size (selected-frame) 120 35)))
 
