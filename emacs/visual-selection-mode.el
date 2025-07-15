@@ -131,8 +131,9 @@ Returns a cons cell (start . end) or nil if not found."
           (set-mark (1+ inside-end))
           (setq mark-active t)
           (my/exit-visual-mode)
-          (message "Marked inside %c%c: '%s'" open-char close-char 
-                  (buffer-substring inside-start (1+ inside-end))))
+          ;; (message "Marked inside %c%c: '%s'" open-char close-char 
+          ;;         (buffer-substring inside-start (1+ inside-end)))
+					)
       (my/exit-visual-mode)
       (message "No matching %c%c found" open-char close-char))))
 
@@ -148,8 +149,9 @@ Returns a cons cell (start . end) or nil if not found."
           (set-mark (1+ end))
           (setq mark-active t)
           (my/exit-visual-mode)
-          (message "Marked around %c%c: '%s'" open-char close-char 
-                  (buffer-substring start (1+ end))))
+          ;; (message "Marked around %c%c: '%s'" open-char close-char 
+          ;;         (buffer-substring start (1+ end)))
+					)
       (my/exit-visual-mode)
       (message "No matching %c%c found" open-char close-char))))
 
@@ -165,8 +167,9 @@ Returns a cons cell (start . end) or nil if not found."
           (set-mark inside-end)  ; Don't add 1 here since end is already past the quote
           (setq mark-active t)
           (my/exit-visual-mode)
-          (message "Marked inside %c: '%s'" quote-char 
-                  (buffer-substring inside-start inside-end)))
+          ;; (message "Marked inside %c: '%s'" quote-char 
+          ;;         (buffer-substring inside-start inside-end))
+					)
       (my/exit-visual-mode)
       (message "No matching %c found" quote-char))))
 
@@ -180,8 +183,9 @@ Returns a cons cell (start . end) or nil if not found."
           (set-mark end)
           (setq mark-active t)
           (my/exit-visual-mode)
-          (message "Marked around %c: '%s'" quote-char 
-                  (buffer-substring start end)))
+          ;; (message "Marked around %c: '%s'" quote-char 
+          ;;         (buffer-substring start end))
+					)
       (my/exit-visual-mode)
       (message "No matching %c found" quote-char))))
 
@@ -189,10 +193,10 @@ Returns a cons cell (start . end) or nil if not found."
 (defun my/enter-visual-mode ()
   "Enter visual selection mode."
   (setq my/visual-mode-active t)
-  (my/debug "Entered visual mode at point %d" (point))
+  ;; (my/debug "Entered visual mode at point %d" (point))
   ;; Set the mark when entering visual mode, just like normal C-SPC
   (set-mark-command nil)
-  (message "Visual mode: i(inside) a(around) + ()[]{}\"'<> | Any other key exits"))
+  (message "Visual mode: i(inside) a(around) + ()[]{}\"'<>"))
 
 (defun my/exit-visual-mode ()
   "Exit visual selection mode."
