@@ -103,7 +103,31 @@
                             (projectile-project-root))
                           default-directory))))))
 
+;; Rust LSP configuration
+(use-package rust-mode
+  :ensure t
+  :hook (rust-mode . lsp-deferred))
 
+;; Enhanced Rust support with additional features
+(use-package rustic
+  :ensure t
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; Use rust-analyzer as the LSP server
+  (setq rustic-analyzer-command '("rust-analyzer"))
+  (setq rustic-format-trigger 'on-compile)
+  (setq rustic-lsp-client 'lsp-mode)
+	(setq lsp-rust-analyzer-cargo-extra-env #s(hash-table size 1 test equal data ()))
+  ;; Configure rustfmt to use edition 2024
+  (setq rustic-rustfmt-args "--edition 2024"))
 
 ;; Built-in tree-sitter (Emacs 29+)
 (when (treesit-available-p)
@@ -143,7 +167,7 @@
   (defun my/install-treesit-grammars ()
     "Install tree-sitter grammars for configured languages."
     (interactive)
-    (dolist (lang '(python css javascript json c cpp typescript yaml bash))
+    (dolist (lang '(python css javascript json c cpp rust typescript yaml bash))
       (unless (treesit-language-available-p lang)
         (condition-case err
             (treesit-install-language-grammar lang)
