@@ -26,6 +26,7 @@
   :commands lsp lsp-deferred
   :init
   (setq lsp-keymap-prefix "C-c l")
+	(setq lsp-diagnostics-provider :flycheck)
   ;; Performance: limit workspace scanning
   (setq lsp-enable-file-watchers nil)
   (setq lsp-auto-guess-root t)  ; Let it find project root properly
@@ -35,6 +36,7 @@
   (setq lsp-inhibit-message t)
   (setq lsp-message-project-root-warning t)
   (setq lsp-eldoc-render-all nil)
+	(setq lsp-inlay-hint-enable t)
   ;; Project isolation settings
   (setq lsp-auto-guess-root t)
   (setq lsp-restart 'auto-restart)
@@ -103,10 +105,14 @@
                             (projectile-project-root))
                           default-directory))))))
 
+(use-package flycheck
+	:ensure t
+	:init (global-flycheck-mode))
+
 ;; Rust LSP configuration
-(use-package rust-mode
-  :ensure t
-  :hook (rust-mode . lsp-deferred))
+;; (use-package rust-mode
+;;   :ensure t
+;;   :hook (rust-mode . lsp-deferred))
 
 ;; Enhanced Rust support with additional features
 (use-package rustic
@@ -126,7 +132,13 @@
   (setq rustic-format-trigger 'on-compile)
   (setq rustic-lsp-client 'lsp-mode)
 	(setq lsp-rust-analyzer-cargo-extra-env #s(hash-table size 1 test equal data ()))
-  ;; Configure rustfmt to use edition 2024
+	;; LSP hints
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (setq lsp-rust-analyzer-display-chaining-hints t)
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
+  (setq lsp-rust-analyzer-display-closure-return-type-hints t)
+  (setq lsp-rust-analyzer-display-parameter-hints nil)
+   ;; Configure rustfmt to use edition 2024
   (setq rustic-rustfmt-args "--edition 2024"))
 
 ;; Built-in tree-sitter (Emacs 29+)
@@ -158,7 +170,7 @@
           (json-mode . json-ts-mode)
           (c-mode . c-ts-mode)
 					(go-mode . go-ts-mode)
-					(rust-mode . rust-ts-mode)
+					;; (rust-mode . rust-ts-mode)
           (c++-mode . c++-ts-mode)
           (typescript-mode . typescript-ts-mode)
           (yaml-mode . yaml-ts-mode)))
