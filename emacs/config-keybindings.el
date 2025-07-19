@@ -20,6 +20,7 @@
 (global-set-key (kbd "M-b") 'my/backward-word-or-whitespace)
 (global-set-key (kbd "M-d") 'my/kill-word-or-whitespace)
 (global-set-key (kbd "M-<backspace>") 'my/backward-kill-word-or-whitespace)
+(global-set-key (kbd "C-<backspace>") 'my/backward-kill-word-or-whitespace)
 
 ;; Direnv utilities
 (global-set-key (kbd "C-c e r") 'my/direnv-refresh)

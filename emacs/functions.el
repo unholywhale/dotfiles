@@ -114,55 +114,107 @@
 (defun my/kill-word-or-whitespace ()
   "Kill forward word or whitespace sequence (Vim-like dw behavior)."
   (interactive)
-  (let ((start (point)))
+  (let ((start (point))
+        (line-end (line-end-position)))
     (cond
-     ;; If at 2+ whitespaces, kill all whitespace
-     ((looking-at "\\s-\\{2,\\}")
-      (skip-chars-forward " \t\n"))
-     ;; If at a quote, kill the entire quoted string
+     ;; If at end of line and not at end of buffer, delete newline and continue
+     ((and (= (point) line-end) (not (eobp)))
+      (delete-char 1)
+      ;; Skip any leading whitespace on next line
+      (skip-chars-forward " \t")
+      ;; If there's a word after whitespace, delete it too
+      (unless (looking-at "\\s-\\|$")
+        (forward-word)))
+     ;; If at whitespace, kill only the whitespace (not following word)
+     ((looking-at "\\s-")
+      (skip-chars-forward " \t" line-end)
+      ;; If we reached end of line with only whitespace, include the newline
+      (when (and (= (point) line-end) (not (eobp)))
+        (delete-char 1)
+        (skip-chars-forward " \t")))
+     ;; If at a quote, try to kill the entire quoted string
      ((looking-at "[\"']")
       (let ((quote-char (char-after))
-            (line-end (line-end-position)))
-        (forward-char) ; move past opening quote
-        (while (and (not (eobp))
-                    (< (point) line-end) ; don't go past current line
-                    (not (= (char-after) quote-char)))
-          (if (= (char-after) ?\\)
-              (forward-char 2) ; skip escaped character
-            (forward-char)))
-        (when (and (not (eobp)) (= (char-after) quote-char))
-          (forward-char)))) ; include closing quote
-     ;; Otherwise, kill to end of word (including single spaces)
+            (found-closing nil)
+            (search-pos (point)))
+        (save-excursion
+          (forward-char) ; move past opening quote
+          ;; Look for matching closing quote on same line only
+          (while (and (< (point) line-end)
+                      (not found-closing))
+            (cond
+             ((= (char-after) ?\\)
+              (forward-char 2)) ; skip escaped character
+             ((= (char-after) quote-char)
+              (setq found-closing t)
+              (setq search-pos (1+ (point))))
+             (t
+              (forward-char)))))
+        (if found-closing
+            ;; Found closing quote - move to after it
+            (goto-char search-pos)
+          ;; No closing quote found - just move past opening quote
+          (forward-char))))
+     ;; Otherwise, kill to end of word (stay on same line)
      (t
-      (forward-word)))
-    (kill-region start (point))))
+      (let ((word-end (save-excursion
+                        (forward-word)
+                        (min (point) line-end))))
+        (goto-char word-end))))
+    (unless (= start (point))
+      (kill-region start (point)))))
 
 (defun my/backward-kill-word-or-whitespace ()
   "Kill backward word or whitespace sequence."
   (interactive)
-  (let ((end (point)))
+  (let ((end (point))
+        (line-start (line-beginning-position)))
     (cond
-     ;; If preceded by 2+ whitespaces, kill all whitespace backward
-     ((looking-back "\\s-\\{2,\\}" (line-beginning-position))
-      (skip-chars-backward " \t\n"))
-     ;; If at a quote (looking back), kill the entire quoted string
-     ((looking-back "[\"']" (line-beginning-position))
+     ;; If at beginning of line and not at beginning of buffer, delete previous newline
+     ((and (= (point) line-start) (not (bobp)))
+      (backward-char) ; delete the newline
+      ;; Skip any trailing whitespace on previous line
+      (skip-chars-backward " \t")
+      ;; If there's a word before whitespace, delete it too
+      (unless (looking-back "\\s-\\|^" (line-beginning-position))
+        (backward-word)))
+     ;; If preceded by whitespace, kill only the whitespace (not preceding word)
+     ((looking-back "\\s-+" line-start)
+      (skip-chars-backward " \t" line-start)
+      ;; If we reached beginning of line with only whitespace, include previous newline
+      (when (and (= (point) line-start) (not (bobp)))
+        (backward-char)
+        (skip-chars-backward " \t")))
+     ;; If at a quote (looking back), try to kill the entire quoted string
+     ((looking-back "[\"']" line-start)
       (let ((quote-char (char-before))
-            (line-start (line-beginning-position)))
-        (backward-char) ; move past closing quote
-        (while (and (not (bobp))
-                    (> (point) line-start) ; don't go past current line
-                    (not (and (= (char-before) quote-char)
-                              ;; Check if this quote is not escaped
-                              (or (= (point) line-start)
-                                  (not (= (char-before (1- (point))) ?\\))))))
-          (backward-char))
-        (when (and (not (bobp)) (= (char-before) quote-char))
-          (backward-char)))) ; include opening quote
-     ;; Otherwise, kill to beginning of word
+            (found-opening nil)
+            (search-pos (point)))
+        (save-excursion
+          (backward-char) ; move past closing quote
+          ;; Look for matching opening quote on same line only
+          (while (and (> (point) line-start)
+                      (not found-opening))
+            (backward-char)
+            (when (and (= (char-after) quote-char)
+                       ;; Check if not escaped
+                       (or (= (point) line-start)
+                           (not (= (char-before) ?\\))))
+              (setq found-opening t)
+              (setq search-pos (point)))))
+        (if found-opening
+            ;; Found opening quote - move to it
+            (goto-char search-pos)
+          ;; No opening quote found - just move past closing quote
+          (backward-char))))
+     ;; Otherwise, kill to beginning of word (stay on same line)
      (t
-      (backward-word)))
-    (kill-region (point) end)))
+      (let ((word-start (save-excursion
+                          (backward-word)
+                          (max (point) line-start))))
+        (goto-char word-start))))
+    (unless (= end (point))
+      (kill-region (point) end))))
 
 ;; Notes directory configuration
 (defvar my/notes-directory "~/personal/notes"
