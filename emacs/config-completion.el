@@ -106,11 +106,11 @@
   (global-company-mode)
   :custom
   (company-begin-commands '(self-insert-command))
-  (company-idle-delay 0.1)
+  (company-idle-delay 0.2)
   (company-require-match nil)
   (company-echo-delay 0.1)
   (company-dabbrev-downcase nil)
-  (company-tooltip-limit 20)
+  (company-tooltip-limit 10)
   (company-minimum-prefix-length 3)
   :config
   ;; History tracking
