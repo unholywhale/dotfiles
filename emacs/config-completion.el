@@ -1,5 +1,7 @@
 ;;; config-completion.el --- Completion system configuration -*- lexical-binding: t; -*-
 
+(setq tab-always-indent 'complete)
+
 ;; Completion framework
 (use-package orderless
   :config
@@ -99,68 +101,85 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; Company completion
-(use-package company
-  :diminish
+;; Corfu completion
+(use-package corfu
+  :ensure t
   :init
-  (global-company-mode)
+  (global-corfu-mode)
   :custom
-  (company-begin-commands '(self-insert-command))
-  (company-idle-delay 0.2)
-  (company-require-match nil)
-  (company-echo-delay 0.1)
-  (company-dabbrev-downcase nil)
-  (company-tooltip-limit 10)
-  (company-minimum-prefix-length 3)
+  (corfu-cycle t)
+  (corfu-auto nil)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  (corfu-quit-no-match 'separator)
+  (corfu-preview-current nil)
+  (corfu-preselect 'first)
+  (corfu-count 10)
+  (corfu-scroll-margin 5)
   :config
-  ;; History tracking
-  (defvar my/company-history-table (make-hash-table :test 'equal)
+  ;; Enable corfu in the minibuffer
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      (setq-local corfu-auto nil)
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+  
+  ;; History tracking for corfu
+  (defvar my/corfu-history-table (make-hash-table :test 'equal)
     "Hash table to store completion history with timestamps.")
-
-  ;; Record selected completions
-  (defun my/company-record-completion (candidate)
+  
+  (defun my/corfu-record-completion ()
     "Record the selected completion with current timestamp."
-    (when candidate
-      (puthash candidate (float-time) my/company-history-table)))
+    (when (and corfu--candidates corfu--index)
+      (let ((candidate (nth corfu--index corfu--candidates)))
+        (when candidate
+          (puthash candidate (float-time) my/corfu-history-table)))))
+  
+  (add-hook 'corfu-insert-hook #'my/corfu-record-completion))
 
-  (add-hook 'company-completion-finished-hook
-            (lambda (candidate) (my/company-record-completion candidate)))
-  ;; Custom transformation function with history and prefix priority
-  (defun my/company-sort-history-prefix-first (candidates)
-    (let* ((input company-prefix)
-           (history-matches '())
-           (prefix-matches '())
-           (other-matches '()))
-      (dolist (cand candidates)
-        (cond
-         ;; First priority: history matches that are also prefix matches
-         ((and (gethash cand my/company-history-table)
-               (string-prefix-p input cand))
-          (push cand history-matches))
-         ;; Second priority: prefix matches without history
-         ((string-prefix-p input cand)
-          (push cand prefix-matches))
-         ;; Everything else
-         (t
-          (push cand other-matches))))
-      ;; Sort history matches by recency (most recent first)
-      (setq history-matches
-            (sort history-matches
-                  (lambda (a b)
-                    (> (gethash a my/company-history-table 0)
-                       (gethash b my/company-history-table 0)))))
-      (nconc history-matches (nreverse prefix-matches) (nreverse other-matches))))
-  ;; Add the sorting function to company transformers
-  (add-to-list 'company-transformers #'my/company-sort-history-prefix-first))
+;; Corfu extensions (built into corfu package)
+(with-eval-after-load 'corfu
+  (require 'corfu-popupinfo)
+  (corfu-popupinfo-mode 1)
+  (setq corfu-popupinfo-delay '(0.5 . 0.2))
+  (setq corfu-popupinfo-hide nil))
 
-(use-package cape)
+;; Terminal support for corfu
+(use-package corfu-terminal
+  :if (not (display-graphic-p))
+  :ensure t
+  :config
+  (corfu-terminal-mode +1))
+
+(use-package cape
+  :ensure t
+  :init
+  ;; Add useful completion sources
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  :config
+  ;; Silence the pcomplete capf, no errors or messages!
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+  
+  ;; Ensure that pcomplete does not write to the buffer
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
 ;; Snippets
 (use-package yasnippet
   :config
   (add-to-list 'yas-snippet-dirs (format "%s/%s" dotfiles-dir "yasnippets"))
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+	:bind
+	(:map yas-minor-mode-map
+				("TAB" . nil)
+				("<tab>" . nil)))
 (use-package yasnippet-snippets)
+(use-package yasnippet-capf
+  :after cape
+  :config
+  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 
 ;; Which-key
 (use-package which-key
