@@ -46,6 +46,29 @@
 (defvar my/current-theme 'modus-operandi-tinted
   "Current theme to use.")
 
+(defvar my/dark-theme 'modus-vivendi-tinted
+	"Dark theme")
+(defvar my/light-theme 'modus-operandi-tinted
+	"Light theme")
+
+;; Auto light/dark theme switching
+(defun check-theme-file ()
+	(let ((current-theme (format "%s/%s" dotfiles-dir "current-theme")))
+		(when (file-exists-p current-theme)
+			(let ((theme (string-trim (with-temp-buffer
+																	(insert-file-contents current-theme)
+																	(buffer-string)))))
+				(cond ((and (string= theme "dark")
+										(not (eq my/current-theme my/dark-theme)))
+							 (message "Loading dark theme: %s" my/dark-theme)
+							 (my/load-theme my/dark-theme))
+							((and (string= theme "light")
+										(not (eq my/current-theme my/light-theme)))
+							 (message "Loading light theme: %s" my/light-theme)
+							 (my/load-theme my/light-theme)))))))
+
+(run-with-timer 0 5 'check-theme-file) 
+
 (defvar my/available-themes '(timu-spacegrey
 															zenburn
 															modus-operandi

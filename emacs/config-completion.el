@@ -169,7 +169,7 @@
 ;; Snippets
 (use-package yasnippet
   :config
-  (add-to-list 'yas-snippet-dirs (format "%s/%s" dotfiles-dir "yasnippets"))
+  (add-to-list 'yas-snippet-dirs (format "%s/%s" emacs-dir "yasnippets"))
   (yas-global-mode 1)
 	:bind
 	(:map yas-minor-mode-map

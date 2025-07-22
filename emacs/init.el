@@ -1,7 +1,8 @@
 ;;; init.el --- Emacs configuration entry point -*- lexical-binding: t; -*-
 
 ;; Set dotfiles directory
-(setq dotfiles-dir "~/dotfiles/emacs")
+(setq dotfiles-dir "~/dotfiles")
+(setq emacs-dir (format "%s/%s" dotfiles-dir "emacs"))
 (setq user-init-file load-file-name)
 
 ;; System-specific configuration (macOS)
@@ -48,7 +49,7 @@
  '(tool-bar-mode nil))
 
 ;; Add config directory to load path
-(add-to-list 'load-path dotfiles-dir)
+(add-to-list 'load-path emacs-dir)
 
 ;; Load custom features
 (require 'functions)
