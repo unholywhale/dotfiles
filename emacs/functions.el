@@ -1,5 +1,32 @@
 ;;; functions.el --- Custom utility functions -*- lexical-binding: t; -*-
 
+;; Smart tab
+(defun my/smart-tab ()
+  "Complete at point if completions available, otherwise indent normally.
+Pre-selects first completion when available."
+  (interactive)
+  (cond
+   ;; In programming/text modes, try completion first
+   ((or (derived-mode-p 'prog-mode)
+        (derived-mode-p 'text-mode)
+        (derived-mode-p 'conf-mode))
+    (let ((completion-result (completion-at-point)))
+      (if (and completion-result
+               (not (eq (car completion-result) (cadr completion-result))))
+          ;; Completions available - trigger and pre-select first
+          (progn
+            (if (bound-and-true-p corfu-mode)
+                (progn
+                  (corfu-complete)
+                  ;; Ensure first item is selected
+                  (when (and corfu--candidates (> (length corfu--candidates) 0))
+                    (setq corfu--index 0)))
+              (completion-at-point)))
+        ;; No completions - indent normally
+        (indent-for-tab-command))))
+   ;; For all other modes, use standard indentation
+   (t (indent-for-tab-command))))
+
 ;; Direnv utilities
 (defun my/direnv-refresh ()
   "Manually refresh direnv environment for current buffer."

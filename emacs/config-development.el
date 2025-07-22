@@ -9,6 +9,8 @@
   ;; Remove roslyn from the client packages list entirely
   (setq lsp-client-packages (delq 'lsp-roslyn lsp-client-packages)))
 
+(setq vc-follow-symlinks t)
+
 ;; Environment management
 (use-package direnv
   :diminish
@@ -26,7 +28,9 @@
   :commands lsp lsp-deferred
   :init
   (setq lsp-keymap-prefix "C-c l")
-	(setq lsp-diagnostics-provider :flycheck)
+  (setq lsp-diagnostics-provider :flycheck)
+  ;; Use corfu for completion
+  (setq lsp-completion-provider :capf)
   ;; Performance: limit workspace scanning
   (setq lsp-enable-file-watchers nil)
   (setq lsp-auto-guess-root t)  ; Let it find project root properly
@@ -36,6 +40,7 @@
   (setq lsp-inhibit-message t)
   (setq lsp-message-project-root-warning t)
   (setq lsp-eldoc-render-all nil)
+	(setq lsp-signature-auto-activate nil)
 	(setq lsp-inlay-hint-enable t)
   ;; Project isolation settings
   (setq lsp-auto-guess-root t)
@@ -62,6 +67,14 @@
         (apply orig-fun args))))
   (advice-add 'lsp--info :around #'my/lsp-message-filter)
   (advice-add 'lsp-workspace-show-message :around #'my/lsp-message-filter))
+
+;; (use-package lsp-ui
+;; 	:ensure
+;; 	:commands lsp-ui-mode
+;; 	:config
+;; 	(setq lsp-ui-peek-always-show t)
+;; 	(setq lsp-ui-sideline-show-hover t)
+;; 	(setq lsp-ui-doc-enable t))
 
 ;; Debug Adapter Protocol (DAP) for interactive debugging
 (use-package dap-mode
@@ -109,6 +122,8 @@
 	:ensure t
 	:init (global-flycheck-mode))
 
+(add-hook 'emacs-lisp-mode-hook (lambda () (flycheck-mode -1)))
+
 ;; Rust LSP configuration
 ;; (use-package rust-mode
 ;;   :ensure t
@@ -134,9 +149,9 @@
 	(setq lsp-rust-analyzer-cargo-extra-env #s(hash-table size 1 test equal data ()))
 	;; LSP hints
   (setq lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (setq lsp-rust-analyzer-display-chaining-hints t)
-  (setq lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
-  (setq lsp-rust-analyzer-display-closure-return-type-hints t)
+  (setq lsp-rust-analyzer-display-chaining-hints nil)
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+  (setq lsp-rust-analyzer-display-closure-return-type-hints nil)
   (setq lsp-rust-analyzer-display-parameter-hints nil)
    ;; Configure rustfmt to use edition 2024
   (setq rustic-rustfmt-args "--edition 2024"))
@@ -170,7 +185,7 @@
           (json-mode . json-ts-mode)
           (c-mode . c-ts-mode)
 					(go-mode . go-ts-mode)
-					;; (rust-mode . rust-ts-mode)
+					(rust-mode . rust-ts-mode)
           (c++-mode . c++-ts-mode)
           (typescript-mode . typescript-ts-mode)
           (yaml-mode . yaml-ts-mode)))
@@ -207,8 +222,12 @@
 
 ;; Parentheses handling
 (use-package smartparens
-  :init
-  (smartparens-global-mode))
+	:init
+	(smartparens-global-mode)
+	:config
+	(setq sp-autodelete-pair nil))
 
 (provide 'config-development)
 ;;; config-development.el ends here
+
+

@@ -1,6 +1,7 @@
 ;;; config-keybindings.el --- Keybindings configuration -*- lexical-binding: t; -*-
 ;; Window movement
 (global-set-key (kbd "C-<tab>") 'other-window)
+(global-set-key (kbd "C-x o") 'ace-select-window)
 
 ;; Text manipulation
 (global-set-key (kbd "M-<up>") 'my/move-text-up)
@@ -55,8 +56,8 @@
 ;; Consult bindings
 (global-set-key (kbd "C-c M-x") 'consult-mode-command)
 (global-set-key (kbd "C-s") 'consult-line)
-(global-set-key (kbd "C-c h") 'consult-history)
-(global-set-key (kbd "C-c k") 'consult-kmacro)
+(global-set-key (kbd "C-c p s") 'consult-ripgrep)
+(global-set-key (kbd "C-c p f") 'consult-find)
 (global-set-key (kbd "C-c i") 'consult-info)
 (global-set-key (kbd "C-x M-:") 'consult-complex-command)
 (global-set-key (kbd "C-x b") 'consult-buffer)
@@ -79,8 +80,8 @@
 (global-set-key (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "M-g I") 'consult-imenu-multi)
 
-;; Company completion
-(global-set-key (kbd "C-c y") 'company-yasnippet)
+;; Completion
+(global-set-key (kbd "C-c y") 'cape-yasnippet)
 
 ;; Embark
 (global-set-key (kbd "C-.") 'embark-act)

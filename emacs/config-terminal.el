@@ -1,5 +1,20 @@
 ;;; config-terminal.el --- Terminal and shell configuration -*- lexical-binding: t; -*-
 
+;; (use-package eat
+;; 	:config
+;; 	(setq eat-term-terminfo-directory "/home/nhlwhl/.emacs.d/straight/repos/eat/terminfo/")
+;; 	;; (setq eat-term-name "xterm-256color")
+;; 	)
+(straight-use-package
+ '(eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el"))))
+
 ;; VTerm configuration
 (use-package vterm
   :straight (:host github :repo "akermu/emacs-libvterm")

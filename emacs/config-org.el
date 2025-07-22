@@ -12,7 +12,7 @@
   :init (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;; Git integration
-(use-package magit)
+;; (straight-use-package 'magit)
 (setq vc-follow-symlinks t)
 
 (provide 'config-org)

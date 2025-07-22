@@ -17,6 +17,9 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
+(add-to-list 'package-archives
+             '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+
 ;; Essential packages
 (use-package diminish)
 (use-package general)
