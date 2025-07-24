@@ -1,4 +1,12 @@
 ;;; config-keybindings.el --- Keybindings configuration -*- lexical-binding: t; -*-
+
+;; Config dir
+(defun find-config ()
+	"Find file in the config directory"
+	(interactive)
+	(consult-find emacs-dir "*.el "))
+(global-set-key (kbd "C-c p c") 'find-config)
+
 ;; Window movement
 (global-set-key (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "C-x o") 'ace-select-window)

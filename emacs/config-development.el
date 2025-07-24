@@ -41,7 +41,7 @@
   (setq lsp-message-project-root-warning t)
   (setq lsp-eldoc-render-all nil)
 	(setq lsp-signature-auto-activate nil)
-	(setq lsp-inlay-hint-enable t)
+	(setq lsp-inlay-hint-enable nil)
   ;; Project isolation settings
   (setq lsp-auto-guess-root t)
   (setq lsp-restart 'auto-restart)
@@ -68,13 +68,13 @@
   (advice-add 'lsp--info :around #'my/lsp-message-filter)
   (advice-add 'lsp-workspace-show-message :around #'my/lsp-message-filter))
 
-;; (use-package lsp-ui
-;; 	:ensure
-;; 	:commands lsp-ui-mode
-;; 	:config
-;; 	(setq lsp-ui-peek-always-show t)
-;; 	(setq lsp-ui-sideline-show-hover t)
-;; 	(setq lsp-ui-doc-enable t))
+(use-package lsp-ui
+	:ensure
+	:commands lsp-ui-mode
+	:config
+	(setq lsp-ui-peek-always-show t)
+	(setq lsp-ui-sideline-show-hover t)
+	(setq lsp-ui-doc-enable nil))
 
 ;; Debug Adapter Protocol (DAP) for interactive debugging
 (use-package dap-mode

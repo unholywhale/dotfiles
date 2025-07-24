@@ -26,6 +26,20 @@
 (use-package restart-emacs
   :ensure t)
 
+;; 1Password Auth Source
+(use-package auth-source-1password
+	:config
+	(auth-source-1password-enable)
+	(setq auth-source-1password-vault "Private")
+	(setq auth-source-1password-construct-secret-reference
+				(lambda (_backend _type host user _port)
+					(cond
+					 ((and (string= host "openrouter.ai") (string= user "api"))
+						"Private/openrouter.ai/credential")
+					 (t
+						(mapconcat #'identity (list auth-source-1password-vault host user)
+											 "/"))))))
+
 ;; Which-key for keybinding hints
 (use-package which-key
   :ensure t

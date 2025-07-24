@@ -63,12 +63,14 @@
 (require 'config-terminal)
 (require 'config-navigation)
 (require 'config-org)
+(require 'config-llm)
 (require 'config-keybindings)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:box (:line-width 6 :style flat-button)))))
+ '(mode-line-inactive ((t (:box (:line-width 6 :style flat-button))))))
 
 ;;; init.el ends here

@@ -152,7 +152,7 @@
 ;; Appearance setup function
 (defun set-appearance ()
   (message "Setting appearance...")
-  (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :foundry "JB" :slant 'normal :weight 'regular :height 120 :width 'normal)
+	(set-face-attribute 'default nil :family "FantasqueSansM Nerd Font" :foundry "PfEd" :slant 'normal :weight 'regular :height 128 :width 'normal)	
   ;; Load current theme
   (my/load-theme my/current-theme)
   (when window-system
