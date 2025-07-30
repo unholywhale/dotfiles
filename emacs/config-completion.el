@@ -57,7 +57,7 @@
 
 (use-package vertico-posframe
 	:config
-	(vertico-posframe-mode 1))
+	(setq vertico-posframe-mode nil))
 
 (use-package consult
 

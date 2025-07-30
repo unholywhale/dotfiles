@@ -14,6 +14,9 @@
   :straight (:host github :repo "lukhas/buffer-move" :files ("buffer-move.el"))
   :ensure t)
 
+(use-package yafolding
+	:ensure t)
+
 ;; Multiple cursors
 (use-package multiple-cursors)
 

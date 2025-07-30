@@ -6,6 +6,31 @@
 		(when auth-info
 			(plist-get (car auth-info) :secret))))
 
+;; Define models as data
+(defvar my/openrouter-models
+  '(("moonshotai/kimi-k2" . "Kimi K2")
+    ("qwen/qwen3-coder" . "Qwen3 Coder")
+    ("openai/gpt-4-turbo" . "GPT-4 Turbo")
+    ("anthropic/claude-4-sonnet" . "Claude Sonnet")))
+
+(defun my/ellama-switch-to-model (model-name display-name)
+  "Switch ellama provider to MODEL-NAME via OpenRouter."
+  (message "Debug: Switching to model %s (%s)" model-name display-name)
+  (let ((api-key (my/get-openrouter-key)))
+    (message "Debug: API key retrieved: %s" (if api-key "YES" "NO"))
+    (if api-key
+        (condition-case err
+            (progn
+              (message "Debug: Creating provider...")
+              (setq ellama-provider
+                    (make-llm-openai-compatible
+                     :key (lambda () api-key)
+                     :url "https://openrouter.ai/api/v1"
+                     :chat-model model-name))
+              (message "Switched to %s" display-name))
+          (error (message "Debug: Error creating provider: %s" err)))
+      (error "Failed to get API key from 1Password"))))
+
 ;; Ellama configuration
 (use-package ellama
   :ensure t
@@ -22,53 +47,94 @@
   :config
   ;; General ellama settings
   (setq ellama-language "English")
-  (setq ellama-enable-keymap t))
+  (setq ellama-enable-keymap t)
+	(with-eval-after-load 'which-key
+		(which-key-add-key-based-replacements
+			"C-c a" "ellama/ai"
+			"C-c a c" "code"
+			"C-c a s" "summarize/session"
+			"C-c a i" "improve"
+			"C-c a m" "make"
+			"C-c a a" "ask"
+			"C-c a t" "text/translate"
+			"C-c a d" "define"
+			"C-c a x" "context"
+			"C-c a p" "provider")))
 
-;; Optional: Configure additional OpenRouter models
-(defun my/ellama-switch-to-kimi-k2 ()
-  "Switch ellama provider to Kimi K2 via OpenRouter."
-  (interactive)
-  (setq ellama-provider
-        (make-llm-openai-compatible
-         :key (lambda () (my/get-1password-secret "OpenRouter API" "credential"))
-         :url "https://openrouter.ai/api/v1"
-         :chat-model "moonshotai/kimi-k2"))
-  (message "Switched to Kimi K2"))
 
-(defun my/ellama-switch-to-qwen3-coder ()
-  "Switch ellama provider to Qwen3 Coder via OpenRouter."
-  (interactive)
-  (setq ellama-provider
-        (make-llm-openai-compatible
-         :key (lambda () (my/get-1password-secret "OpenRouter API" "credential"))
-         :url "https://openrouter.ai/api/v1"
-         :chat-model "qwen/qwen3-coder"))
-  (message "Switched to Qwen3 Coder"))
 
-(defun my/ellama-switch-to-gpt4 ()
-  "Switch ellama provider to GPT-4 via OpenRouter."
-  (interactive)
-  (setq ellama-provider
-        (make-llm-openai-compatible
-         :key (lambda () (my/get-1password-secret "OpenRouter API" "credential"))
-         :url "https://openrouter.ai/api/v1"
-         :chat-model "openai/gpt-4-turbo"))
-  (message "Switched to GPT-4 Turbo"))
+;; Add providers - delay execution to ensure functions are loaded
+(eval-after-load 'ellama
+  '(progn
+     (setq ellama-providers
+           (append ellama-providers
+                   (list (cons "Kimi K2" '(make-llm-openai-compatible
+                                           :key (lambda () (my/get-openrouter-key))
+                                           :url "https://openrouter.ai/api/v1"
+                                           :chat-model "moonshotai/kimi-k2"))
+                         (cons "GPT-4 Turbo" '(make-llm-openai-compatible
+                                               :key (lambda () (my/get-openrouter-key))
+                                               :url "https://openrouter.ai/api/v1"
+                                               :chat-model "openai/gpt-4-turbo"))
+                         (cons "Qwen3 Coder" '(make-llm-openai-compatible
+                                               :key (lambda () (my/get-openrouter-key))
+                                               :url "https://openrouter.ai/api/v1"
+                                               :chat-model "qwen/qwen3-coder"))
+                         (cons "Claude Sonnet" '(make-llm-openai-compatible
+                                                 :key (lambda () (my/get-openrouter-key))
+                                                 :url "https://openrouter.ai/api/v1"
+                                                 :chat-model "anthropic/claude-4-sonnet")))))))
 
-(defun my/ellama-switch-to-claude ()
-  "Switch ellama provider to Claude 4 Sonnet via OpenRouter."
-  (interactive)
-  (setq ellama-provider
-        (make-llm-openai-compatible
-         :key (lambda () (my/get-1password-secret "OpenRouter API" "credential"))
-         :url "https://openrouter.ai/api/v1"
-         :chat-model "anthropic/claude-4-sonnet"))
-  (message "Switched to Claude 3.5 Sonnet"))
+;; ChatGPT Shell configuration
+(use-package shell-maker
+  :straight (:type git :host github :repo "xenodium/shell-maker"))
 
-;; Add which-key descriptions for ellama commands
+(use-package chatgpt-shell
+  :straight (:type git
+									 :host github
+									 :repo "xenodium/chatgpt-shell")
+									 ;; :local-repo "~/personal/chatgpt-shell/"
+									 ;; :files ("*.el" "*.png")
+									 )
+	;;(:host github :repo "xenodium/chatgpt-shell")
+  :config
+  ;; Load OpenRouter provider
+  (require 'chatgpt-shell-openrouter)
+  ;; Set OpenRouter key
+  (setq chatgpt-shell-openrouter-key (lambda () (my/get-openrouter-key)))
+	(setq chatgpt-shell-model-version "moonshotai/kimi-k2")
+
+  ;; Add custom OpenRouter models
+  (setq chatgpt-shell-models
+        (append chatgpt-shell-models
+                (list
+                 (chatgpt-shell-openrouter-make-model
+                  :label "Kimi K2"
+                  :version "moonshotai/kimi-k2"
+                  :short-version "kimi-k2"
+                  :token-width 4
+                  :context-window 128000)
+                 (chatgpt-shell-openrouter-make-model
+                  :label "Qwen3 Coder"
+                  :version "qwen/qwen3-coder"
+                  :short-version "qwen3-coder"
+                  :token-width 4
+                  :context-window 256000))))
+
+  ;; Set default model (with openrouter/ prefix)
+  ;;(setq chatgpt-shell-model-version "moonshotai/kimi-k2")
+  ;; Keybindings
+  :bind
+  (("C-c g c" . chatgpt-shell)
+   ("C-c g r" . chatgpt-shell-prompt-region)
+   ("C-c g b" . chatgpt-shell-prompt-buffer)))
+
+
+;; Add which-key descriptions
 (with-eval-after-load 'which-key
   (which-key-add-key-based-replacements
-    "C-c a" "ellama/ai"))
+    "C-c g" "chatgpt-shell"))
+
 
 (provide 'config-llm)
 ;;; config-llm.el ends here

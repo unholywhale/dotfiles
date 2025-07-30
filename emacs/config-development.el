@@ -225,6 +225,8 @@
 	:init
 	(smartparens-global-mode)
 	:config
+	(sp-local-pair 'emacs-lisp-mode "'" "'" :actions '(wrap autoskip navigate escape))
+	(sp-local-pair 'emacs-lisp-mode "`" "`" :actions '(wrap autoskip navigate escape))
 	(setq sp-autodelete-pair nil))
 
 (provide 'config-development)

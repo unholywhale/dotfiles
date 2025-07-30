@@ -16,7 +16,6 @@
 
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
-
 (add-to-list 'package-archives
              '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 
@@ -25,6 +24,8 @@
 (use-package general)
 (use-package restart-emacs
   :ensure t)
+(use-package request)
+(use-package websocket)
 
 ;; 1Password Auth Source
 (use-package auth-source-1password
